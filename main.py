@@ -189,47 +189,47 @@ class Rooms(BaseModel):
 # ----------------------------------------- DEVICES -------------------------------------------------
 
 # get all device data
-@app.get("device/", tags=["Devices"])
+@app.get("/device/", tags=["Devices"])
 async def All_Device_Data():
     try:
         device_list = []
         documents = device_collections.find()
         for document in documents:
-            print(document)
+
             device_list.append(document)
-        print(f"device list =  {device_list}")
+
         return device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
 # get all device details
-@app.get("device/details", tags=["Devices"])
+@app.get("/device/details", tags=["Devices"])
 async def All_Device_Details():
     # device_details_collections.delete_many('_id')
     try:
         device_list = []
         documents = device_detail_collections.find()
         for document in documents:
-            print(document)
+
             device_list.append(document)
-        print(f"device list =  {device_list}")
+
         return {"details": device_list}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
 # get all device details
-@app.get("device/log", tags=["Devices"])
+@app.get("/device/log", tags=["Devices"])
 async def All_Device_Details():
     # device_details_collections.delete_many('_id')
     try:
         device_list = []
         documents = device_details_log_collections.find()
         for x in documents:
-            # print(x)
+
             device_list.append(x)
-        print(device_list)
+
         return {"log": device_list}
         # for document in documensist}
     except:
@@ -237,7 +237,7 @@ async def All_Device_Details():
 
 
 # get device data from id
-@app.get("device/{item_id}", tags=["Devices"])
+@app.get("/device/{item_id}", tags=["Devices"])
 async def Get_Device_Data_with_ID(item_id: int):
     try:
         return device_collections.find_one({'_id': item_id})
@@ -245,13 +245,13 @@ async def Get_Device_Data_with_ID(item_id: int):
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
-@app.delete("device/{item_id}", tags=["Devices"])
+@app.delete("/device/{item_id}", tags=["Devices"])
 async def Delete_Devices_by_id(item_id: int):
     return device_collections.delete_one({'_id': item_id})
 
 
 # update device data using put
-@app.put('device/{item_id}', tags=["Devices"])
+@app.put('/device/{item_id}', tags=["Devices"])
 def Update_device_status(device: Devices_put, item_id: int):
     device_collections.update_one({'_id': item_id}, {"$set": {"status": device.status}})
 
@@ -259,7 +259,7 @@ def Update_device_status(device: Devices_put, item_id: int):
 
 
 # create new devices
-@app.post("device/", tags=["Devices"])
+@app.post("/device/", tags=["Devices"])
 async def create_New_devices(devices: Devices, request: Request):
     try:
         device_collections.insert_one({'_id': devices.id, 'status': devices.status})
@@ -273,7 +273,7 @@ async def create_New_devices(devices: Devices, request: Request):
 
 
 # create new devices
-@app.post("device/details", tags=["Devices"])
+@app.post("/device/details", tags=["Devices"])
 async def create_New_devices(devices: Devices_details, request: Request):
     try:
         device_detail_collections.insert_one(
@@ -289,7 +289,7 @@ async def create_New_devices(devices: Devices_details, request: Request):
 
 
 # create new devices
-@app.post("device/log", tags=["Devices"])
+@app.post("/device/log", tags=["Devices"])
 async def create_New_devices_Log(devices: Log, request: Request):
     try:
         device_details_log_collections.insert_one(
@@ -306,13 +306,12 @@ async def create_New_devices_Log(devices: Log, request: Request):
 # get all fan data
 @app.get("/fan/", tags=["Fan"])
 async def All_Fan_Data():
-    print("inside fan get")
     fan_list = []
     documents = fan_collections.find()
     for document in documents:
-        print(document)
+
         fan_list.append(document)
-    print(f"fan list =  {fan_list}")
+
     return fan_list
 
 
@@ -355,9 +354,9 @@ async def All_Fan_Details():
         device_list = []
         documents = fan_details_collections.find()
         for document in documents:
-            print(document)
+
             device_list.append(document)
-        print(f"device list =  {device_list}")
+
         return {"details": device_list}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -369,9 +368,9 @@ async def All_fan_Logs():
     device_list = []
     documents = fan_details_log_collections.find()
     for x in documents:
-        # print(x)
+
         device_list.append(x)
-    print(device_list)
+
     return device_list
 
 
@@ -407,11 +406,11 @@ async def create_New_Fan_Log(devices: Log, request: Request):
 # get all led data
 @app.get("/led/", tags=['LED'])
 async def All_LED_Data():
-    print("inside fan get")
+
     list = []
     documents = led_collections.find()
     for document in documents:
-        print(document)
+
         list.append(document)
     return list
 
@@ -455,9 +454,9 @@ async def All_LED_Details():
         device_list = []
         documents = led_details_collections.find()
         for document in documents:
-            print(document)
+
             device_list.append(document)
-        print(f"device list =  {device_list}")
+
         return {"details": device_list}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -469,9 +468,9 @@ async def All_LED_Logs():
     device_list = []
     documents = led_details_log_collections.find()
     for x in documents:
-        # print(x)
+
         device_list.append(x)
-    print(device_list)
+
     return device_list
 
 
@@ -510,7 +509,7 @@ async def All_mechanics_Data():
     list = []
     documents = mechanics_collections.find()
     for document in documents:
-        print(document)
+
         list.append(document)
     return list
 
@@ -555,9 +554,9 @@ async def All_Mechanics_Details():
         device_list = []
         documents = mechanics_details_collections.find()
         for document in documents:
-            print(document)
+
             device_list.append(document)
-        print(f"device list =  {device_list}")
+
         return {"details": device_list}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -569,9 +568,9 @@ async def All_mechanics_Logs():
     device_list = []
     documents = mechanics_details_log_collections.find()
     for x in documents:
-        # print(x)
+
         device_list.append(x)
-    print(device_list)
+
     return device_list
 
 
@@ -610,7 +609,7 @@ async def All_eb_Data():
     list = []
     documents = eb_sensor_collections.find()
     for document in documents:
-        print(document)
+
         list.append(document)
     return list
 
@@ -657,7 +656,7 @@ async def All_Eb3phase_Data():
     list = []
     documents = eb3phasae_sensor_collections.find()
     for document in documents:
-        print(document)
+
         list.append(document)
     return list
 
@@ -720,13 +719,13 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
 # get all room data
 @app.get("/room/", tags=['Rooms'])
 async def All_Room_Data():
-    print("inside room get")
+
     room_list = []
     documents = room_collections.find()
     for document in documents:
-        print(document)
+
         room_list.append(document)
-    print(f"fan list =  {room_list}")
+
     return room_list
 
 
