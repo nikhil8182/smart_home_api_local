@@ -1,190 +1,10 @@
 import time
-
-from pymongo import MongoClient
 from fastapi import FastAPI, Request, HTTPException
-
-from pydantic import BaseModel
+from models import *
+from mongo import *
 from fastapi.responses import JSONResponse
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
-
-client = MongoClient("mongodb://localhost:27017/")
-
-db = client["localSmartHomeServer"]
-
-device_collections = db["devices"]
-fan_collections = db["fan"]
-led_collections = db["led"]
-mechanics_collections = db['Mechanics']
-
-device_detail_collections = db["devices_detail"]
-fan_details_collections = db["fan_details"]
-led_details_collections = db["led_details"]
-mechanics_details_collections = db['Mechanics_details']
-
-device_details_log_collections = db["devices_details_logs"]
-fan_details_log_collections = db["fan_details_log"]
-led_details_log_collections = db["led_details_log"]
-mechanics_details_log_collections = db['Mechanics_details_log']
-
-eb_sensor_collections = db["eb_sensor"]
-eb3phasae_sensor_collections = db["eb_sensor"]
-wta_collections = db["wta"]
-
-board_log_collections = db["board_log"]
-room_collections = db["room"]
-
-
-class Devices(BaseModel):
-    id: int
-    status: bool
-
-
-class Log(BaseModel):
-    status: str
-    timestamp: int
-
-
-class Devices_details(BaseModel):
-    id: int
-    device_id: int
-    device_name: str
-    room: str
-    type: str
-
-
-class Fan_details(BaseModel):
-    id: int
-    device_id: int
-    device_name: str
-    room: str
-    type: str
-
-
-class Mechanics_details(BaseModel):
-    id: int
-    device_id: int
-    device_name: str
-    room: str
-    type: str
-
-
-class Led_details(BaseModel):
-    id: int
-    device_id: int
-    device_name: str
-    room: str
-    type: str
-    # log:og
-
-
-class Log(BaseModel):
-    device_id: int
-    status: str
-    timestamp: int
-    updated_by: str
-
-
-class Devices_put(BaseModel):
-    status: bool
-
-
-class Led(BaseModel):
-    id: int
-
-    status: bool
-    R: str
-    G: str
-    B: str
-
-
-class Led_put(BaseModel):
-    status: bool
-    R: str
-    G: str
-    B: str
-
-
-class Fan(BaseModel):
-    id: int
-    status: bool
-    speed: int
-
-
-class Fan_put(BaseModel):
-    status: bool
-    speed: int
-
-
-class Mechanics(BaseModel):
-    id: int
-    value: str
-
-
-class Mechanics_put(BaseModel):
-    id: int
-    value: str
-
-
-class Wta(BaseModel):
-    id: int
-    level: int
-
-
-class Eb(BaseModel):
-    id: int
-    voltage: int
-    amp: float
-    status: bool
-    ups_voltage: int
-    ups_AMP: int
-    ups_battery_percentage: int
-
-
-class Eb_put(BaseModel):
-    voltage: int
-    amp: float
-    status: bool
-    ups_voltage: int
-    ups_AMP: int
-    ups_battery_percentage: int
-
-
-class Eb3(BaseModel):
-    id: int
-    R_voltage: int
-    Y_voltage: int
-    B_voltage: int
-    R_amp: float
-    Y_amp: float
-    B_amp: float
-    status: bool
-    ups_voltage: int
-    ups_AMP: int
-    ups_battery_percentage: int
-
-
-class Eb3_put(BaseModel):
-    R_voltage: int
-    Y_voltage: int
-    B_voltage: int
-    R_amp: float
-    Y_amp: float
-    B_amp: float
-    status: bool
-    ups_voltage: int
-    ups_AMP: int
-    ups_battery_percentage: int
-
-
-class Rooms(BaseModel):
-    id: int
-    name: str
-    devices: list[int]
-    fan: list[int]
-    led: list[int]
-    mechanics: list[int]
-
 
 # ----------------------------------------- DEVICES -------------------------------------------------
 
@@ -195,7 +15,6 @@ async def All_Device_Data():
         device_list = []
         documents = device_collections.find()
         for document in documents:
-
             device_list.append(document)
 
         return device_list
@@ -211,7 +30,6 @@ async def All_Device_Details():
         device_list = []
         documents = device_detail_collections.find()
         for document in documents:
-
             device_list.append(document)
 
         return {"details": device_list}
@@ -227,7 +45,6 @@ async def All_Device_Details():
         device_list = []
         documents = device_details_log_collections.find()
         for x in documents:
-
             device_list.append(x)
 
         return {"log": device_list}
@@ -247,6 +64,8 @@ async def Get_Device_Data_with_ID(item_id: int):
 
 @app.delete("/device/{item_id}", tags=["Devices"])
 async def Delete_Devices_by_id(item_id: int):
+    # print("........................................................................................................")
+    # print(item_id)
     return device_collections.delete_one({'_id': item_id})
 
 
@@ -309,7 +128,6 @@ async def All_Fan_Data():
     fan_list = []
     documents = fan_collections.find()
     for document in documents:
-
         fan_list.append(document)
 
     return fan_list
@@ -354,7 +172,6 @@ async def All_Fan_Details():
         device_list = []
         documents = fan_details_collections.find()
         for document in documents:
-
             device_list.append(document)
 
         return {"details": device_list}
@@ -368,7 +185,6 @@ async def All_fan_Logs():
     device_list = []
     documents = fan_details_log_collections.find()
     for x in documents:
-
         device_list.append(x)
 
     return device_list
@@ -395,7 +211,8 @@ async def create_New_Fan_Details(devices: Fan_details, request: Request):
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         fan_details_log_collections.insert_one(
-            {"_id":time.time(),"device_id":devices.device_id,"status": devices.status, "timestamp": devices.timestamp, "updated_by": devices.updated_by})
+            {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
+             "timestamp": devices.timestamp, "updated_by": devices.updated_by})
         return {"msg": "log created", "created_data": devices, "client": request.client}
     except:
 
@@ -406,11 +223,9 @@ async def create_New_Fan_Log(devices: Log, request: Request):
 # get all led data
 @app.get("/led/", tags=['LED'])
 async def All_LED_Data():
-
     list = []
     documents = led_collections.find()
     for document in documents:
-
         list.append(document)
     return list
 
@@ -426,7 +241,7 @@ async def Delete_led_by_id(item_id: int):
 
 
 # update device data using put
-@app.put('led/{item_id}', tags=['LED'])
+@app.put('/led/{item_id}', tags=['LED'])
 def Update_led_status(led: Led_put, item_id: int):
     led_collections.update_one({'_id': item_id}, {"$set": {"status": led.status, "R": led.R, "G": led.G, "B": led.B}})
 
@@ -447,14 +262,13 @@ async def create_New_led(led: Led, request: Request):
 
 
 # get all device details
-@app.get("led/details", tags=["LED"])
+@app.get("/led/details/", tags=["LED"])
 async def All_LED_Details():
     # device_details_collections.delete_many('_id')
     try:
         device_list = []
         documents = led_details_collections.find()
         for document in documents:
-
             device_list.append(document)
 
         return {"details": device_list}
@@ -463,19 +277,18 @@ async def All_LED_Details():
 
 
 # get all device details
-@app.get("led/log", tags=["LED"])
+@app.get("/led/log", tags=["LED"])
 async def All_LED_Logs():
     device_list = []
     documents = led_details_log_collections.find()
     for x in documents:
-
         device_list.append(x)
 
     return device_list
 
 
 # create new devices
-@app.post("led/details", tags=["LED"])
+@app.post("/led/details", tags=["LED"])
 async def create_New_LED_Details(devices: Led_details, request: Request):
     try:
         led_details_collections.insert_one(
@@ -491,11 +304,12 @@ async def create_New_LED_Details(devices: Led_details, request: Request):
 
 
 # create new devices
-@app.post("led/log", tags=["LED"])
+@app.post("/led/log", tags=["LED"])
 async def create_New_LED_Log(devices: Log, request: Request):
     try:
         led_details_log_collections.insert_one(
-            {"_id":time.time(),"device_id":devices.device_id,"status": devices.status, "timestamp": devices.timestamp, "updated_by": devices.updated_by})
+            {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
+             "timestamp": devices.timestamp, "updated_by": devices.updated_by})
         return {"msg": "log created", "created_data": devices, "client": request.client}
     except:
 
@@ -509,7 +323,6 @@ async def All_mechanics_Data():
     list = []
     documents = mechanics_collections.find()
     for document in documents:
-
         list.append(document)
     return list
 
@@ -545,7 +358,6 @@ async def create_mechanics_led(mechanics: Mechanics, request: Request):
                 return {"msg": {f'id {mechanics.id} already exist in fan, try using other id'}}
 
 
-
 # get all device details
 @app.get("mechanics/details", tags=["Mechanics"])
 async def All_Mechanics_Details():
@@ -554,7 +366,6 @@ async def All_Mechanics_Details():
         device_list = []
         documents = mechanics_details_collections.find()
         for document in documents:
-
             device_list.append(document)
 
         return {"details": device_list}
@@ -568,7 +379,6 @@ async def All_mechanics_Logs():
     device_list = []
     documents = mechanics_details_log_collections.find()
     for x in documents:
-
         device_list.append(x)
 
     return device_list
@@ -595,7 +405,8 @@ async def create_New_Fan_Details(devices: Mechanics_details, request: Request):
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         mechanics_details_log_collections.insert_one(
-            {"_id":time.time(),"device_id":devices.device_id,"status": devices.status, "timestamp": devices.timestamp, "updated_by": devices.updated_by})
+            {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
+             "timestamp": devices.timestamp, "updated_by": devices.updated_by})
         return {"msg": "log created", "created_data": devices, "client": request.client}
     except:
 
@@ -609,7 +420,6 @@ async def All_eb_Data():
     list = []
     documents = eb_sensor_collections.find()
     for document in documents:
-
         list.append(document)
     return list
 
@@ -656,7 +466,6 @@ async def All_Eb3phase_Data():
     list = []
     documents = eb3phasae_sensor_collections.find()
     for document in documents:
-
         list.append(document)
     return list
 
@@ -719,11 +528,9 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
 # get all room data
 @app.get("/room/", tags=['Rooms'])
 async def All_Room_Data():
-
     room_list = []
     documents = room_collections.find()
     for document in documents:
-
         room_list.append(document)
 
     return room_list
