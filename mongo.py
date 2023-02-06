@@ -19,6 +19,8 @@ fan_details_log_collections = db["fan_details_log"]
 led_details_log_collections = db["led_details_log"]
 mechanics_details_log_collections = db['Mechanics_details_log']
 
+device_board_log_collections = db["devices_board_logs"]
+
 eb_sensor_collections = db["eb_sensor"]
 eb3phasae_sensor_collections = db["eb_sensor"]
 wta_collections = db["wta"]
