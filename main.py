@@ -52,6 +52,20 @@ async def All_Device_Details():
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
+@app.get("/device/boardlog", tags=["Devices"])
+async def All_Device_Details():
+    # device_details_collections.delete_many('_id')
+    try:
+        device_list = []
+        documents = device_board_log_collections.find()
+        for x in documents:
+            device_list.append(x)
+
+        return {"log": device_list}
+        # for document in documensist}
+    except:
+        return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
+
 
 # get device data from id
 @app.get("/device/{item_id}", tags=["Devices"])
@@ -112,6 +126,17 @@ async def create_New_devices(devices: Devices_details, request: Request):
 async def create_New_devices_Log(devices: Log, request: Request):
     try:
         device_details_log_collections.insert_one(
+            {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
+             "timestamp": devices.timestamp, "updated_by": devices.updated_by})
+        return {"msg": "log created", "created_data": devices, "client": request.client}
+    except:
+
+        return {"msg": {f'id already exist in devices log, try using other id'}}
+
+@app.post("/device/boardlog", tags=["Devices"])
+async def create_New_devices_Log(devices: Log, request: Request):
+    try:
+        device_board_log_collections.insert_one(
             {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
              "timestamp": devices.timestamp, "updated_by": devices.updated_by})
         return {"msg": "log created", "created_data": devices, "client": request.client}
