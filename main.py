@@ -558,3 +558,6 @@ async def create_New_room(room: Rooms, request: Request):
             id = document['_id']
             if id == room.id:
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='8000', debug=True)
