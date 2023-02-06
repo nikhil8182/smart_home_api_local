@@ -89,7 +89,7 @@ class Mechanics(BaseModel):
 
 class Mechanics_put(BaseModel):
     id: int
-    value: str
+    values: str
 
 
 class Wta(BaseModel):

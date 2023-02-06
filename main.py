@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
 
+
 # ----------------------------------------- DEVICES -------------------------------------------------
 
 # get all device data
@@ -32,7 +33,7 @@ async def All_Device_Details():
         for document in documents:
             device_list.append(document)
 
-        return {"details": device_list}
+        return  device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
@@ -47,10 +48,11 @@ async def All_Device_Details():
         for x in documents:
             device_list.append(x)
 
-        return {"log": device_list}
+        return  device_list
         # for document in documensist}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
+
 
 @app.get("/device/boardlog", tags=["Devices"])
 async def All_Device_Details():
@@ -61,7 +63,7 @@ async def All_Device_Details():
         for x in documents:
             device_list.append(x)
 
-        return {"log": device_list}
+        return  device_list
         # for document in documensist}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -72,6 +74,14 @@ async def All_Device_Details():
 async def Get_Device_Data_with_ID(item_id: int):
     try:
         return device_collections.find_one({'_id': item_id})
+    except:
+        return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
+
+# get device data from id
+@app.get("/device/details/{item_id}", tags=["Devices"])
+async def Get_Device_Data_with_ID(item_id: int):
+    try:
+        return device_detail_collections.find_one({'_id': item_id})
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
@@ -132,6 +142,7 @@ async def create_New_devices_Log(devices: Log, request: Request):
     except:
 
         return {"msg": {f'id already exist in devices log, try using other id'}}
+
 
 @app.post("/device/boardlog", tags=["Devices"])
 async def create_New_devices_Log(devices: Log, request: Request):
@@ -583,6 +594,7 @@ async def create_New_room(room: Rooms, request: Request):
             id = document['_id']
             if id == room.id:
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000', debug=True)
