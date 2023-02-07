@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Devices</title>
+    </head>
+    <body>
+        <h2>This is devices page</h2>
+        <fieldset>
+            <legend>GET</legend>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                </tr>
+                {% for device in device_list %}
+                <tr>
+                    <td>{{device._id}}</td>
+                    <td>{{device.status}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>POST</legend>
+            <form method="post" action="">
+                <input type="text" name="id" id="">
+                <input type="text" name="status" id="">
+                <input type="submit" value="POST">
+
+            </form>
+        </fieldset>
+
+        <fieldset>
+            <legend>PUT</legend>
+            <form method="post">
+
+            </form>
+        </fieldset>
+
+        <fieldset>
+            <legend>Delete</legend>
+            <form method="post">
+
+            </form>
+        </fieldset>
+    </body>
+</html>

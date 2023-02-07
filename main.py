@@ -1,16 +1,18 @@
-import time
-from fastapi import FastAPI, Request, HTTPException
+import time, requests
+from fastapi import FastAPI, Request, HTTPException, Form
 from models import *
 from mongo import *
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
+templates = Jinja2Templates(directory="templates")
 
 
 # ----------------------------------------- DEVICES -------------------------------------------------
 
 # get all device data
-@app.get("/device/", tags=["Devices"])
+@app.get("/device", tags=["Devices"])
 async def All_Device_Data():
     try:
         device_list = []
@@ -33,7 +35,7 @@ async def All_Device_Details():
         for document in documents:
             device_list.append(document)
 
-        return  device_list
+        return device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
@@ -48,7 +50,7 @@ async def All_Device_Details():
         for x in documents:
             device_list.append(x)
 
-        return  device_list
+        return device_list
         # for document in documensist}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -63,7 +65,7 @@ async def All_Device_Details():
         for x in documents:
             device_list.append(x)
 
-        return  device_list
+        return device_list
         # for document in documensist}
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
@@ -76,6 +78,7 @@ async def Get_Device_Data_with_ID(item_id: int):
         return device_collections.find_one({'_id': item_id})
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
+
 
 # get device data from id
 @app.get("/device/details/{item_id}", tags=["Devices"])
@@ -96,15 +99,20 @@ async def Delete_Devices_by_id(item_id: int):
 # update device data using put
 @app.put('/device/{item_id}', tags=["Devices"])
 def Update_device_status(device: Devices_put, item_id: int):
+    print('devices ', Devices, type(Devices))
     device_collections.update_one({'_id': item_id}, {"$set": {"status": device.status}})
 
     return {"msg": f"updated device id {item_id} to {device.status}"}
 
 
 # create new devices
-@app.post("/device/", tags=["Devices"])
+@app.post("/device", tags=["Devices"])
 async def create_New_devices(devices: Devices, request: Request):
+    print('ionsidferw create new device')
     try:
+        print('deci ', devices, type(devices))
+        print(devices.id)
+        print(devices.status)
         device_collections.insert_one({'_id': devices.id, 'status': devices.status})
         return {"msg": "created successfully", "created_data": devices, "client": request.client}
     except Exception as e:
@@ -159,7 +167,7 @@ async def create_New_devices_Log(devices: Log, request: Request):
 # ----------------------------------------- FAN -------------------------------------------------
 
 # get all fan data
-@app.get("/fan/", tags=["Fan"])
+@app.get("/fan", tags=["Fan"])
 async def All_Fan_Data():
     fan_list = []
     documents = fan_collections.find()
@@ -180,7 +188,7 @@ async def Delete_fan_by_id(item_id: int):
 
 
 # update device data using put
-@app.put('fan/{item_id}', tags=["Fan"])
+@app.put('/fan/{item_id}', tags=["Fan"])
 def Update_fan_status(device: Fan_put, item_id: int):
     fan_collections.update_one({'_id': item_id}, {"$set": {"status": device.status, "speed": device.speed}})
 
@@ -201,7 +209,7 @@ async def create_New_fan(fan: Fan, request: Request):
 
 
 # get all device details
-@app.get("fan/details", tags=["Fan"])
+@app.get("/fan/details", tags=["Fan"])
 async def All_Fan_Details():
     # device_details_collections.delete_many('_id')
     try:
@@ -216,7 +224,7 @@ async def All_Fan_Details():
 
 
 # get all device details
-@app.get("fan/log", tags=["Fan"])
+@app.get("/fan/log", tags=["Fan"])
 async def All_fan_Logs():
     device_list = []
     documents = fan_details_log_collections.find()
@@ -227,7 +235,7 @@ async def All_fan_Logs():
 
 
 # create new devices
-@app.post("fan/details", tags=["Fan"])
+@app.post("/fan/details", tags=["Fan"])
 async def create_New_Fan_Details(devices: Fan_details, request: Request):
     try:
         fan_details_collections.insert_one(
@@ -243,7 +251,7 @@ async def create_New_Fan_Details(devices: Fan_details, request: Request):
 
 
 # create new devices
-@app.post("fan/log", tags=["Fan"])
+@app.post("/fan/log", tags=["Fan"])
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         fan_details_log_collections.insert_one(
@@ -257,7 +265,7 @@ async def create_New_Fan_Log(devices: Log, request: Request):
 
 # ----------------------------------------- LED -------------------------------------------------
 # get all led data
-@app.get("/led/", tags=['LED'])
+@app.get("/led", tags=['LED'])
 async def All_LED_Data():
     list = []
     documents = led_collections.find()
@@ -298,7 +306,7 @@ async def create_New_led(led: Led, request: Request):
 
 
 # get all device details
-@app.get("/led/details/", tags=["LED"])
+@app.get("/led/details", tags=["LED"])
 async def All_LED_Details():
     # device_details_collections.delete_many('_id')
     try:
@@ -354,7 +362,7 @@ async def create_New_LED_Log(devices: Log, request: Request):
 
 # ----------------------------------------- Mechanics -------------------------------------------------
 # get all led data
-@app.get("/mechanics/", tags=['Mechanics'])
+@app.get("/mechanics", tags=['Mechanics'])
 async def All_mechanics_Data():
     list = []
     documents = mechanics_collections.find()
@@ -395,7 +403,7 @@ async def create_mechanics_led(mechanics: Mechanics, request: Request):
 
 
 # get all device details
-@app.get("mechanics/details", tags=["Mechanics"])
+@app.get("/mechanics/details", tags=["Mechanics"])
 async def All_Mechanics_Details():
     # device_details_collections.delete_many('_id')
     try:
@@ -410,7 +418,7 @@ async def All_Mechanics_Details():
 
 
 # get all device details
-@app.get("mechanics/log", tags=["Mechanics"])
+@app.get("/mechanics/log", tags=["Mechanics"])
 async def All_mechanics_Logs():
     device_list = []
     documents = mechanics_details_log_collections.find()
@@ -421,7 +429,7 @@ async def All_mechanics_Logs():
 
 
 # create new devices
-@app.post("mechanics/details", tags=["Mechanics"])
+@app.post("/mechanics/details", tags=["Mechanics"])
 async def create_New_Fan_Details(devices: Mechanics_details, request: Request):
     try:
         mechanics_details_collections.insert_one(
@@ -437,7 +445,7 @@ async def create_New_Fan_Details(devices: Mechanics_details, request: Request):
 
 
 # create new devices
-@app.post("mechanics/log", tags=["Mechanics"])
+@app.post("/mechanics/log", tags=["Mechanics"])
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         mechanics_details_log_collections.insert_one(
@@ -451,7 +459,7 @@ async def create_New_Fan_Log(devices: Log, request: Request):
 
 # ----------------------------------------- EB -------------------------------------------------
 # get all led data
-@app.get("/eb/", tags=['EB'])
+@app.get("/eb", tags=['EB'])
 async def All_eb_Data():
     list = []
     documents = eb_sensor_collections.find()
@@ -471,7 +479,7 @@ async def Delete_Eb_by_id(item_id: int):
 
 
 # update device data using put
-@app.put('eb/{item_id}', tags=['EB'])
+@app.put('/eb/{item_id}', tags=['EB'])
 def Update_Eb(eb: Eb_put, item_id: int):
     eb_sensor_collections.update_one({'_id': item_id}, {
         "$set": {"voltage": eb.voltage, "amp": eb.amp, "ups_voltage": eb.ups_voltage, "ups_amp": eb.ups_AMP,
@@ -497,7 +505,7 @@ async def create_New_Eb(eb: Eb, request: Request):
 
 # ----------------------------------------- EB 3 Phase -------------------------------------------------
 # get all led data
-@app.get("/eb3/", tags=['EB 3 Phase'])
+@app.get("/eb3", tags=['EB 3 Phase'])
 async def All_Eb3phase_Data():
     list = []
     documents = eb3phasae_sensor_collections.find()
@@ -517,7 +525,7 @@ async def Delete_Eb3phase_by_id(item_id: int):
 
 
 # update device data using put
-@app.put('eb3/{item_id}', tags=['EB 3 Phase'])
+@app.put('/eb3/{item_id}', tags=['EB 3 Phase'])
 def Update_Eb3phase_status(eb3: Eb3_put, item_id: int):
     eb3phasae_sensor_collections.update_one({'_id': item_id}, {"$set": {
         "R_voltage": eb3.R_voltage,
@@ -562,7 +570,7 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
 
 
 # get all room data
-@app.get("/room/", tags=['Rooms'])
+@app.get("/room", tags=['Rooms'])
 async def All_Room_Data():
     room_list = []
     documents = room_collections.find()
@@ -596,5 +604,36 @@ async def create_New_room(room: Rooms, request: Request):
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='8000', debug=True)
+# templates
+@app.get("/templates/devices")
+async def template_device(request: Request):
+    device_list = []
+    documents = device_collections.find()
+    for document in documents:
+        device_list.append(document)
+    if request.method == "POST":
+        print('inside posttttt')
+        
+        
+        # devices = {}
+        # create_New_devices(devices: Devices, request: Request)
+
+    return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list})
+
+@app.post("/templates/devices")
+async def template_device_create(id = Form(...), status = Form(...)):
+    print(id)
+    print(status)
+    print("status")
+
+# @app.post("/device", tags=["Devices"])
+# async def create_New_devices(devices: Devices, request: Request):
+#     try:
+#         device_collections.insert_one({'_id': devices.id, 'status': devices.status})
+#         return {"msg": "created successfully", "created_data": devices, "client": request.client}
+#     except Exception as e:
+#         documents = device_collections.find()
+#         for document in documents:
+#             id = document['_id']
+#             if id == devices.id:
+#                 return {"msg": {f'id {devices.id} already exist in devices, try using other id'}}
