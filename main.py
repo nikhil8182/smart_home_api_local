@@ -374,7 +374,7 @@ async def Delete_mechanics_by_id(item_id: int):
 
 
 # update device data using put
-@app.put('mechanics/{item_id}', tags=['Mechanics'])
+@app.put('/mechanics/{item_id}', tags=['Mechanics'])
 def Update_mechanics_status(mechanics: Mechanics_put, item_id: int):
     mechanics_collections.update_one({'_id': item_id}, {"$set": {"values": mechanics.value}})
 
