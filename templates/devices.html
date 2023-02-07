@@ -5,6 +5,7 @@
         <title>Devices</title>
     </head>
     <body>
+        <a href="/templates/device">Device</a>
         <h2>This is devices page</h2>
         <fieldset>
             <legend>GET</legend>
@@ -24,25 +25,30 @@
 
         <fieldset>
             <legend>POST</legend>
+            {{msg}}
             <form method="post" action="">
                 <input type="text" name="id" id="">
                 <input type="text" name="status" id="">
                 <input type="submit" value="POST">
-
             </form>
         </fieldset>
 
         <fieldset>
             <legend>PUT</legend>
-            <form method="post">
-
+            {{put_msg}}
+            <form method="post" action="/templates/device/put">
+                <input type="text" name="id" id="">
+                <input type="text" name="status" id="">
+                <input type="submit" value="POST">
             </form>
         </fieldset>
 
         <fieldset>
             <legend>Delete</legend>
-            <form method="post">
-
+            {{delete_msg}}
+            <form method="post" action="/templates/device/delete">
+                <input type="text" name="id" id="">
+                <input type="submit" value="POST">
             </form>
         </fieldset>
     </body>

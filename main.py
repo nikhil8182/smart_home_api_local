@@ -4,6 +4,7 @@ from models import *
 from mongo import *
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
 templates = Jinja2Templates(directory="templates")
@@ -91,15 +92,12 @@ async def Get_Device_Data_with_ID(item_id: int):
 
 @app.delete("/device/{item_id}", tags=["Devices"])
 async def Delete_Devices_by_id(item_id: int):
-    # print("........................................................................................................")
-    # print(item_id)
     return device_collections.delete_one({'_id': item_id})
 
 
 # update device data using put
 @app.put('/device/{item_id}', tags=["Devices"])
 def Update_device_status(device: Devices_put, item_id: int):
-    print('devices ', Devices, type(Devices))
     device_collections.update_one({'_id': item_id}, {"$set": {"status": device.status}})
 
     return {"msg": f"updated device id {item_id} to {device.status}"}
@@ -108,11 +106,7 @@ def Update_device_status(device: Devices_put, item_id: int):
 # create new devices
 @app.post("/device", tags=["Devices"])
 async def create_New_devices(devices: Devices, request: Request):
-    print('ionsidferw create new device')
     try:
-        print('deci ', devices, type(devices))
-        print(devices.id)
-        print(devices.status)
         device_collections.insert_one({'_id': devices.id, 'status': devices.status})
         return {"msg": "created successfully", "created_data": devices, "client": request.client}
     except Exception as e:
@@ -604,36 +598,62 @@ async def create_New_room(room: Rooms, request: Request):
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
 
 
+
 # templates
-@app.get("/templates/devices")
+@app.get("/templates/device")
 async def template_device(request: Request):
     device_list = []
     documents = device_collections.find()
     for document in documents:
         device_list.append(document)
-    if request.method == "POST":
-        print('inside posttttt')
         
-        
-        # devices = {}
-        # create_New_devices(devices: Devices, request: Request)
-
     return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list})
 
-@app.post("/templates/devices")
-async def template_device_create(id = Form(...), status = Form(...)):
-    print(id)
-    print(status)
-    print("status")
 
-# @app.post("/device", tags=["Devices"])
-# async def create_New_devices(devices: Devices, request: Request):
-#     try:
-#         device_collections.insert_one({'_id': devices.id, 'status': devices.status})
-#         return {"msg": "created successfully", "created_data": devices, "client": request.client}
-#     except Exception as e:
-#         documents = device_collections.find()
-#         for document in documents:
-#             id = document['_id']
-#             if id == devices.id:
-#                 return {"msg": {f'id {devices.id} already exist in devices, try using other id'}}
+@app.post("/templates/device")
+async def template_device_create(request: Request, id: int=Form(...),status: bool=Form(...) ):
+  try:
+    device_collections.insert_one({'_id': id, 'status': status})
+    devices = {'_id': id, 'status': status}
+    # return {"msg": "created successfully", "created_data": devices, "client": request.client}
+    device_list = []
+    documents = device_collections.find()
+    for document in documents:
+        device_list.append(document)
+    return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": "Created successfully"})
+    
+  except:
+    documents = device_collections.find()
+    for document in documents:
+      idd = document['_id']
+      if idd == id:
+        device_list = []
+        documents = device_collections.find()
+        for document in documents:
+            device_list.append(document)
+        return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": f'id {id} already exist in devices, try using other id'})
+        # return {"msg": {f'id {id} already exist in devices, try using other id'}}
+
+@app.post('/templates/device/put', tags=["Devices"])
+def template_device_update(request: Request, id: int=Form(...), status: bool=Form(...)):
+    device_collections.update_one({'_id': id}, {"$set": {"status": status}})
+    device_list = []
+    documents = device_collections.find()
+    for document in documents:
+        device_list.append(document)
+        
+    return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "put_msg": f"updated device id {id} to {status}"})
+
+
+@app.post("/templates/device/delete", tags=["Devices"])
+async def template_device_delete(request: Request, id: int=Form(...)):
+    # documents = device_collections.find()
+    # for document in documents:
+    #   idd = document['_id']
+    #   if idd == id:
+    device_collections.delete_one({'_id': id})
+    device_list = []
+    documents = device_collections.find()
+    for document in documents:
+        device_list.append(document)
+    return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "delete_msg": f"id {id} deleted successfully"})
