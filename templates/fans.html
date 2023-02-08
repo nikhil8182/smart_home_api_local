@@ -2,11 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Devices</title>
+        <title>fans</title>
     </head>
     <body>
-        <a href="/templates/device">Device</a>
-        <h2>This is devices page</h2>
+        <a href="/templates/fan">fan</a>
+        <h2>This is fans page</h2>
         <fieldset>
             <legend>GET</legend>
             <table>
@@ -14,10 +14,10 @@
                     <th>ID</th>
                     <th>Status</th>
                 </tr>
-                {% for device in device_list %}
+                {% for fan in fan_list %}
                 <tr>
-                    <td>{{device._id}}</td>
-                    <td>{{device.status}}</td>
+                    <td>{{fan._id}}</td>
+                    <td>{{fan.status}}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -26,7 +26,7 @@
         <fieldset>
             <legend>POST</legend>
             {{msg}}
-            <form method="post" action="/templates/device">
+            <form method="post" action="/templates/fan">
                 <input type="text" name="id" id="">
                 <input type="text" name="status" id="">
                 <input type="submit" value="POST">
@@ -36,7 +36,7 @@
         <fieldset>
             <legend>PUT</legend>
             {{put_msg}}
-            <form method="post" action="/templates/device/put">
+            <form method="post" action="/templates/fan/put">
                 <input type="text" name="id" id="">
                 <input type="text" name="status" id="">
                 <input type="submit" value="POST">
@@ -46,7 +46,7 @@
         <fieldset>
             <legend>Delete</legend>
             {{delete_msg}}
-            <form method="post" action="/templates/device/delete">
+            <form method="post" action="/templates/fan/delete">
                 <input type="text" name="id" id="">
                 <input type="submit" value="POST">
             </form>
