@@ -588,7 +588,7 @@ async def Delete_room_by_id(item_id: int):
 @app.post("/room", description="Create a new room", tags=['Rooms'])
 async def create_New_room(room: Rooms, request: Request):
     try:
-        room_collections.insert_one({'_id': room.id, 'status': room.name, 'device_id': room.devices})
+        room_collections.insert_one({'_id': room.id, 'status': room.name, 'device_id': room.devices, 'fan_id': room.fan, 'led_id': room.led, 'mechanics_id': room.mechanics})
         return {"msg": "created successfully", "created_data": room, "client": request.client}
     except Exception as e:
         documents = device_collections.find()
