@@ -205,15 +205,17 @@ async def create_New_fan(fan: Fan, request: Request):
 # get all device details
 @app.get("/fan/details", tags=["Fan"])
 async def All_Fan_Details():
+    print('inside fan details')
     # device_details_collections.delete_many('_id')
     try:
         device_list = []
         documents = fan_details_collections.find()
         for document in documents:
             device_list.append(document)
-
+        print('before try return')
         return {"details": device_list}
-    except:
+    except Exception as e:
+        print('errr is ;', e)
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 

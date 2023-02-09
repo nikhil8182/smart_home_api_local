@@ -84,7 +84,7 @@ class Fan_put(BaseModel):
 
 class Mechanics(BaseModel):
     id: int
-    value: str
+    values: str
 
 
 class Mechanics_put(BaseModel):
