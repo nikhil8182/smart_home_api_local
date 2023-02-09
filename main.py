@@ -728,3 +728,4 @@ async def template_fan_delete(request: Request, id: int=Form(...)):
     for document in documents:
         fan_list.append(document)
     return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list, "delete_msg": f"id {id} deleted successfully"})
+# to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 80
