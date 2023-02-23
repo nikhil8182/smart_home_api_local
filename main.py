@@ -193,7 +193,7 @@ def Update_fan_status(device: Fan_put, item_id: int):
 async def create_New_fan(fan: Fan, request: Request):
     try:
         fan_collections.insert_one({'_id': fan.id, 'status': fan.status, 'speed': fan.speed})
-        return {"msg": "created successfully", "created_data": Fan, "client": request.client}
+        return {"msg": "created successfully", "created_data": fan, "client": request.client}
     except Exception as e:
         documents = fan_collections.find()
         for document in documents:
@@ -590,7 +590,9 @@ async def Delete_room_by_id(item_id: int):
 @app.post("/room", description="Create a new room", tags=['Rooms'])
 async def create_New_room(room: Rooms, request: Request):
     try:
-        room_collections.insert_one({'_id': room.id, 'status': room.name, 'device_id': room.devices, 'fan_id': room.fan, 'led_id': room.led, 'mechanics_id': room.mechanics})
+        room_collections.insert_one(
+            {'_id': room.id, 'status': room.name, 'device_id': room.devices, 'fan_id': room.fan, 'led_id': room.led,
+             'mechanics_id': room.mechanics})
         return {"msg": "created successfully", "created_data": room, "client": request.client}
     except Exception as e:
         documents = device_collections.find()
@@ -600,7 +602,6 @@ async def create_New_room(room: Rooms, request: Request):
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
 
 
-
 # device templates
 @app.get("/templates/device")
 async def template_device(request: Request):
@@ -608,39 +609,41 @@ async def template_device(request: Request):
     documents = device_collections.find()
     for document in documents:
         device_list.append(document)
-        
-    return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list})
+
+    return templates.TemplateResponse("devices.html", {"request": request, "device_list": device_list})
 
 
 @app.post("/templates/device")
-async def template_device_create(request: Request, id: int=Form(...),status: bool=Form(...) ):
-  try:
-    device_collections.insert_one({'_id': id, 'status': status})
-    response = RedirectResponse(url='/templates/device')
-    return response
-    # devices = {'_id': id, 'status': status}
-    # return {"msg": "created successfully", "created_data": devices, "client": request.client}
-    # device_list = []
-    # documents = device_collections.find()
-    # for document in documents:
-    #     device_list.append(document)
-    # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": "Created successfully"})
-    
-  except Exception as e:
-    print('error isss ', e)
-    documents = device_collections.find()
-    for document in documents:
-      idd = document['_id']
-      if idd == id:
-        device_list = []
+async def template_device_create(request: Request, id: int = Form(...), status: bool = Form(...)):
+    try:
+        device_collections.insert_one({'_id': id, 'status': status})
+        response = RedirectResponse(url='/templates/device')
+        return response
+        # devices = {'_id': id, 'status': status}
+        # return {"msg": "created successfully", "created_data": devices, "client": request.client}
+        # device_list = []
+        # documents = device_collections.find()
+        # for document in documents:
+        #     device_list.append(document)
+        # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": "Created successfully"})
+
+    except Exception as e:
+        print('error isss ', e)
         documents = device_collections.find()
         for document in documents:
-            device_list.append(document)
-        return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": f'id {id} already exist in devices, try using other id'})
-        # return {"msg": {f'id {id} already exist in devices, try using other id'}}
+            idd = document['_id']
+            if idd == id:
+                device_list = []
+                documents = device_collections.find()
+                for document in documents:
+                    device_list.append(document)
+                return templates.TemplateResponse("devices.html", {"request": request, "device_list": device_list,
+                                                                   "msg": f'id {id} already exist in devices, try using other id'})
+                # return {"msg": {f'id {id} already exist in devices, try using other id'}}
+
 
 @app.post('/templates/device/put', tags=["Devices"])
-def template_device_update(request: Request, id: int=Form(...), status: bool=Form(...)):
+def template_device_update(request: Request, id: int = Form(...), status: bool = Form(...)):
     device_collections.update_one({'_id': id}, {"$set": {"status": status}})
     response = RedirectResponse(url='/templates/device')
     return response
@@ -648,12 +651,12 @@ def template_device_update(request: Request, id: int=Form(...), status: bool=For
     # documents = device_collections.find()
     # for document in documents:
     #     device_list.append(document)
-        
+
     # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "put_msg": f"updated device id {id} to {status}"})
 
 
 @app.post("/templates/device/delete", tags=["Devices"])
-async def template_device_delete(request: Request, id: int=Form(...)):
+async def template_device_delete(request: Request, id: int = Form(...)):
     # documents = device_collections.find()
     # for document in documents:
     #   idd = document['_id']
@@ -668,8 +671,6 @@ async def template_device_delete(request: Request, id: int=Form(...)):
     # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "delete_msg": f"id {id} deleted successfully"})
 
 
-
-
 # fan templates
 @app.get("/templates/fan")
 async def template_fan(request: Request):
@@ -677,47 +678,51 @@ async def template_fan(request: Request):
     documents = fan_collections.find()
     for document in documents:
         fan_list.append(document)
-        
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list})
+
+    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list})
 
 
 @app.post("/templates/fan")
-async def template_fan_create(request: Request, id: int=Form(...),status: bool=Form(...) ):
-  try:
-    fan_collections.insert_one({'_id': id, 'status': status})
-    fans = {'_id': id, 'status': status}
-    # return {"msg": "created successfully", "created_data": fans, "client": request.client}
-    fan_list = []
-    documents = fan_collections.find()
-    for document in documents:
-        fan_list.append(document)
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list, "msg": "Created successfully"})
-    
-  except:
-    documents = fan_collections.find()
-    for document in documents:
-      idd = document['_id']
-      if idd == id:
+async def template_fan_create(request: Request, id: int = Form(...), status: bool = Form(...)):
+    try:
+        fan_collections.insert_one({'_id': id, 'status': status})
+        fans = {'_id': id, 'status': status}
+        # return {"msg": "created successfully", "created_data": fans, "client": request.client}
         fan_list = []
         documents = fan_collections.find()
         for document in documents:
             fan_list.append(document)
-        return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list, "msg": f'id {id} already exist in fans, try using other id'})
-        # return {"msg": {f'id {id} already exist in fans, try using other id'}}
+        return templates.TemplateResponse("fans.html",
+                                          {"request": request, "fan_list": fan_list, "msg": "Created successfully"})
+
+    except:
+        documents = fan_collections.find()
+        for document in documents:
+            idd = document['_id']
+            if idd == id:
+                fan_list = []
+                documents = fan_collections.find()
+                for document in documents:
+                    fan_list.append(document)
+                return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
+                                                                "msg": f'id {id} already exist in fans, try using other id'})
+                # return {"msg": {f'id {id} already exist in fans, try using other id'}}
+
 
 @app.post('/templates/fan/put', tags=["fans"])
-def template_fan_update(request: Request, id: int=Form(...), status: bool=Form(...)):
+def template_fan_update(request: Request, id: int = Form(...), status: bool = Form(...)):
     fan_collections.update_one({'_id': id}, {"$set": {"status": status}})
     fan_list = []
     documents = fan_collections.find()
     for document in documents:
         fan_list.append(document)
-        
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list, "put_msg": f"updated fan id {id} to {status}"})
+
+    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
+                                                    "put_msg": f"updated fan id {id} to {status}"})
 
 
 @app.post("/templates/fan/delete", tags=["fans"])
-async def template_fan_delete(request: Request, id: int=Form(...)):
+async def template_fan_delete(request: Request, id: int = Form(...)):
     # documents = fan_collections.find()
     # for document in documents:
     #   idd = document['_id']
@@ -727,5 +732,34 @@ async def template_fan_delete(request: Request, id: int=Form(...)):
     documents = fan_collections.find()
     for document in documents:
         fan_list.append(document)
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list":fan_list, "delete_msg": f"id {id} deleted successfully"})
+    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
+                                                    "delete_msg": f"id {id} deleted successfully"})
+
+
 # to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 80
+
+
+@app.get("/temp", tags=['Temperature'])
+async def All_Room_Data():
+    room_list = []
+    documents = temp_collections.find()
+    for document in documents:
+        room_list.append(document)
+
+    return room_list
+
+
+@app.post("/temp", description="Create a new item", tags=["Temperature"])
+async def create_New_fan(temp: Temperature, request: Request):
+    try:
+        temp_collections.insert_one(
+            {'_id': time.time(), "device_id": temp.device_id, 'room': temp.room, 'temperature': temp.temperature,
+             'humidity': temp.humidity,
+             'timestamp': temp.timestamp})
+        return {"msg": "created successfully", "created_data": temp, "client": request.client}
+    except:
+        documents = temp_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == temp.device_id:
+                return {"msg": {f'id {temp.device_id} already exist in temp, try using other id'}}

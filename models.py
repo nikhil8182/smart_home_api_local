@@ -82,6 +82,14 @@ class Fan_put(BaseModel):
     speed: int
 
 
+class Temperature(BaseModel):
+    device_id: int
+    room: str
+    temperature: float
+    humidity: float
+    timestamp: int
+
+
 class Mechanics(BaseModel):
     id: int
     values: str
