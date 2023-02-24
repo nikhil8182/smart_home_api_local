@@ -499,7 +499,86 @@ async def create_New_Eb(eb: Eb, request: Request):
                 return {"msg": {f'id {eb.id} already exist in fan, try using other id'}}
 
 
-# ----------------------------------------- EB 3 Phase -------------------------------------------------
+@app.get("/eb/status", tags=['EB'])
+async def All_eb_Data():
+    list = []
+    documents = eb_status_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/eb/status/{item_id}", tags=['EB'])
+async def Get_Eb_Data_with_ID(item_id: int):
+    return eb_status_collections.find_one({'_id': item_id})     
+            
+@app.post("/eb/status", description="Create a new Mechanics", tags=['EB'])
+async def create_New_Eb(eb: EbStatus, request: Request):
+    try:
+        eb_status_collections.insert_one({'_id': eb.id, "status": eb.status, "time_stamp":eb.time_stamp})
+        return {"msg": "created successfully", "created_data": eb, "client": request.client}
+    except:
+        documents = eb_status_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == eb.id:
+                return {"msg": {f'id {eb.id} already exist in fan, try using other id'}}
+            
+
+@app.get("/ups/voltage", tags=['EB'])
+async def All_eb_Data():
+    list = []
+    documents = eb_ups_voltage_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/ups/voltage/{item_id}", tags=['EB'])
+async def Get_Eb_Data_with_ID(item_id: int):
+    return eb_ups_voltage_collections.find_one({'_id': item_id})     
+            
+@app.post("/ups/voltage", description="Create a new Mechanics", tags=['EB'])
+async def create_New_Eb(eb: EbStatus, request: Request):
+    try:
+        eb_ups_voltage_collections.insert_one({'_id': eb.id, "status": eb.status, "time_stamp":eb.time_stamp})
+        return {"msg": "created successfully", "created_data": eb, "client": request.client}
+    except:
+        documents = eb_ups_voltage_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == eb.id:
+                return {"msg": {f'id {eb.id} already exist in fan, try using other id'}}
+            
+
+
+@app.get("/ups/ampere", tags=['EB'])
+async def All_eb_Data():
+    list = []
+    documents = eb_ups_ampere_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/ups/ampere/{item_id}", tags=['EB'])
+async def Get_Eb_Data_with_ID(item_id: int):
+    return eb_ups_ampere_collections.find_one({'_id': item_id})     
+
+@app.post("/ups/ampere", description="Create a new Mechanics", tags=['EB'])
+async def create_New_Eb(eb: EbStatus, request: Request):
+    try:
+        eb_ups_ampere_collections.insert_one({'_id': eb.id, "status": eb.status, "time_stamp":eb.time_stamp})
+        return {"msg": "created successfully", "created_data": eb, "client": request.client}
+    except:
+        documents = eb_ups_ampere_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == eb.id:
+                return {"msg": {f'id {eb.id} already exist in fan, try using other id'}}
+
+
+# ------------------------------- EB 3 Phase -----------------------------
 # get all led data
 @app.get("/eb3", tags=['EB 3 Phase'])
 async def All_Eb3phase_Data():

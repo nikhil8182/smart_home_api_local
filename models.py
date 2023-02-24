@@ -123,6 +123,20 @@ class Eb_put(BaseModel):
     ups_AMP: int
     ups_battery_percentage: int
 
+class EbStatus(BaseModel):
+    id: int
+    status: bool
+    time_stamp: int
+
+class UpsVoltage(BaseModel):
+    id: int
+    voltage: int
+    time_stamp: int
+
+class UpsAmpere(BaseModel):
+    id: int
+    ampere: float
+    time_stamp: int
 
 class Eb3(BaseModel):
     id: int
