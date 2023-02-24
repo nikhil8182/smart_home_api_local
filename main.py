@@ -356,7 +356,7 @@ async def All_Mechanics_Details():
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
-@app.get("/mechanics/log", tags=["Mechanics"])
+@app.get("/mechanica/log", tags=["Mechanics"])
 async def All_mechanics_Logs():
     device_list = []
     documents = mechanics_details_log_collections.find()
