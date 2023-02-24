@@ -1,5 +1,5 @@
 import time
-from fastapi import FastAPI, Request, HTTPException, Form
+from fastapi import FastAPI, Request, Form
 from models import *
 from mongo import *
 from fastapi.responses import JSONResponse
