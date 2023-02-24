@@ -736,7 +736,6 @@ async def template_fan_delete(request: Request, id: int = Form(...)):
                                                     "delete_msg": f"id {id} deleted successfully"})
 
 
-# to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 80
 
 
 @app.get("/temp", tags=['Temperature'])
@@ -763,3 +762,5 @@ async def create_New_fan(temp: Temperature, request: Request):
             id = document['_id']
             if id == temp.device_id:
                 return {"msg": {f'id {temp.device_id} already exist in temp, try using other id'}}
+
+# to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 8182
