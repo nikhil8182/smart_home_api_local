@@ -1,4 +1,4 @@
-import time, requests
+import time
 from fastapi import FastAPI, Request, HTTPException, Form
 from models import *
 from mongo import *
