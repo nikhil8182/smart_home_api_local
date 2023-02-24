@@ -7,16 +7,12 @@ from mongo import *
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
 
 
-# ----------------------------------------- DEVICES -------------------------------------------------
-
-# get all device data
 @app.get("/device", tags=["Devices"])
 async def All_Device_Data():
     try:
         device_list = []
         documents = device_collections.find()
         for document in documents:
-            print(document)
             device_list.append(document)
 
         return device_list
@@ -192,7 +188,7 @@ async def create_New_fan(fan: Fan, request: Request):
     try:
         fan_collections.insert_one({'_id': fan.id, 'status': fan.status, 'speed': fan.speed})
         return {"msg": "created successfully", "created_data": fan, "client": request.client}
-    except Exception as e:
+    except:
         documents = fan_collections.find()
         for document in documents:
             id = document['_id']
@@ -203,17 +199,14 @@ async def create_New_fan(fan: Fan, request: Request):
 # get all device details
 @app.get("/fan/details", tags=["Fan"])
 async def All_Fan_Details():
-    print('inside fan details')
     # device_details_collections.delete_many('_id')
     try:
         device_list = []
         documents = fan_details_collections.find()
         for document in documents:
             device_list.append(document)
-        print('before try return')
         return {"details": device_list}
-    except Exception as e:
-        print('errr is ;', e)
+    except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
@@ -378,7 +371,6 @@ async def Delete_mechanics_by_id(item_id: int):
 # update device data using put
 @app.put('/mechanics/{item_id}', tags=['Mechanics'])
 def Update_mechanics_status(mechanics: Mechanics_put, item_id: int):
-    print('mec', mechanics)
     mechanics_collections.update_one({'_id': item_id}, {"$set": {"values": mechanics.values}})
 
     return {"msg": f"updated to {mechanics}"}
@@ -640,18 +632,11 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
 
 @app.get("/eb3/voltage", tags=['EB 3 Phase'])
 async def All_Eb3phase_Voltage_Data():
-    print('inside def')
     list = []
-    print('after list')
-    try:
-        print('inside tru')
-        documents = eb3phasae_voltage_collections.find()
-        print("documents", documents)
-        for document in documents:
-            list.append(document)
-        return list
-    except Exception as e:
-        print('asdf ', e)
+    documents = eb3phasae_voltage_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
 
 
 @app.get("/eb3/voltage/{item_id}", tags=['EB 3 Phase'])
