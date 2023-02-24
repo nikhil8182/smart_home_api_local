@@ -150,6 +150,19 @@ class Eb3_put(BaseModel):
     ups_AMP: int
     ups_battery_percentage: int
 
+class Eb3Voltage(BaseModel):
+    id: int
+    r_voltage: int
+    y_voltage: int
+    b_voltage: int
+    time_stamp: int
+
+class Eb3Ampere(BaseModel):
+    id: int
+    r_ampere: float
+    y_ampere: float
+    b_ampere: float
+    time_stamp: int
 
 class Rooms(BaseModel):
     id: int

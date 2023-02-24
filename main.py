@@ -19,6 +19,7 @@ async def All_Device_Data():
         device_list = []
         documents = device_collections.find()
         for document in documents:
+            print(document)
             device_list.append(document)
 
         return device_list
@@ -380,7 +381,8 @@ async def Delete_mechanics_by_id(item_id: int):
 # update device data using put
 @app.put('/mechanics/{item_id}', tags=['Mechanics'])
 def Update_mechanics_status(mechanics: Mechanics_put, item_id: int):
-    mechanics_collections.update_one({'_id': item_id}, {"$set": {"values": mechanics.value}})
+    print('mec', mechanics)
+    mechanics_collections.update_one({'_id': item_id}, {"$set": {"values": mechanics.values}})
 
     return {"msg": f"updated to {mechanics}"}
 
@@ -388,7 +390,7 @@ def Update_mechanics_status(mechanics: Mechanics_put, item_id: int):
 @app.post("/mechanics", description="Create a new Mechanics", tags=['Mechanics'])
 async def create_mechanics_led(mechanics: Mechanics, request: Request):
     try:
-        mechanics_collections.insert_one({'_id': mechanics.id, 'values': mechanics.value})
+        mechanics_collections.insert_one({'_id': mechanics.id, 'values': mechanics.values})
         return {"msg": "created successfully", "created_data": mechanics, "client": request.client}
     except Exception as e:
         documents = mechanics_collections.find()
@@ -449,7 +451,6 @@ async def create_New_Fan_Log(devices: Log, request: Request):
              "timestamp": devices.timestamp, "updated_by": devices.updated_by})
         return {"msg": "log created", "created_data": devices, "client": request.client}
     except:
-
         return {"msg": {f'id already exist in devices log, try using other id'}}
 
 
@@ -478,8 +479,7 @@ async def Delete_Eb_by_id(item_id: int):
 @app.put('/eb/{item_id}', tags=['EB'])
 def Update_Eb(eb: Eb_put, item_id: int):
     eb_sensor_collections.update_one({'_id': item_id}, {
-        "$set": {"voltage": eb.voltage, "amp": eb.amp, "ups_voltage": eb.ups_voltage, "ups_amp": eb.ups_AMP,
-                 "status": eb.status, "ups_battery_percentages": eb.ups_battery_percentage}})
+        "$set": {"voltage": eb.voltage, "amp": eb.amp, "ups_voltage": eb.ups_voltage, "ups_amp": eb.ups_AMP, "status": eb.status, "ups_battery_percentages": eb.ups_battery_percentage}})
 
     return {"msg": f"updated to {eb}"}
 
@@ -561,6 +561,85 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
             if id == eb3.id:
                 return {"msg": {f'id {eb3.id} already exist in fan, try using other id'}}
 
+
+@app.get("/eb3/voltage", tags=['EB 3 Phase'])
+async def All_Eb3phase_Voltage_Data():
+    print('inside def')
+    list = []
+    print('after list')
+    try:
+        print('inside tru')
+        documents = eb3phasae_voltage_collections.find()
+        print("documents", documents)
+        for document in documents:
+            list.append(document)
+        return list
+    except Exception as e:
+        print('asdf ', e)
+
+
+@app.get("/eb3/voltage/{item_id}", tags=['EB 3 Phase'])
+async def Get_Eb3phase_Data_with_ID(item_id: int):
+    return eb3phasae_voltage_collections.find_one({'_id': item_id})
+
+
+@app.post("/eb3/voltage", description="Create a new Mechanics", tags=['EB 3 Phase'])
+async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
+    try:
+        eb3phasae_voltage_collections.insert_one(
+            {
+                "_id": eb3.id,
+                "r_voltage": eb3.r_voltage,
+                "y_voltage": eb3.y_voltage,
+                "b_voltage": eb3.b_voltage,
+                "time_stamp": eb3.time_stamp
+            }
+        )
+
+        return {"msg": "created successfully", "created_data": eb3, "client": request.client}
+    except:
+        documents = eb3phasae_voltage_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == eb3.id:
+                return {"msg": {f'id {eb3.id} already exist in fan, try using other id'}}
+
+            
+            
+@app.get("/eb3/ampere", tags=['EB 3 Phase'])
+async def All_Eb3phase_ampere_Data():
+    list = []
+    documents = eb3phasae_ampere_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/eb3/ampere/{item_id}", tags=['EB 3 Phase'])
+async def Get_Eb3phase_Data_with_ID(item_id: int):
+    return eb3phasae_ampere_collections.find_one({'_id': item_id})
+
+
+@app.post("/eb3/ampere", description="Create a new Mechanics", tags=['EB 3 Phase'])
+async def create_New_Eb3phase(eb3: Eb3Ampere, request: Request):
+    try:
+        eb3phasae_ampere_collections.insert_one(
+            {
+                "_id": eb3.id,
+                "r_ampere": eb3.r_ampere,
+                "y_ampere": eb3.y_ampere,
+                "b_ampere": eb3.b_ampere,
+                "time_stamp": eb3.time_stamp
+            }
+        )
+
+        return {"msg": "created successfully", "created_data": eb3, "client": request.client}
+    except:
+        documents = eb3phasae_ampere_collections.find()
+        for document in documents:
+            id = document['_id']
+            if id == eb3.id:
+                return {"msg": {f'id {eb3.id} already exist in fan, try using other id'}}
 
 # ----------------------------------------- ROOM -------------------------------------------------
 
