@@ -1,13 +1,10 @@
 import time
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request
 from models import *
 from mongo import *
-from fastapi.responses import JSONResponse
-from fastapi.templating import Jinja2Templates
-from starlette.responses import RedirectResponse
+
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
-templates = Jinja2Templates(directory="templates")
 
 
 # ----------------------------------------- DEVICES -------------------------------------------------
@@ -758,140 +755,6 @@ async def create_New_room(room: Rooms, request: Request):
             id = document['_id']
             if id == room.id:
                 return {"msg": {f'id {room.id} already exist in rooms, try using other id'}}
-
-
-# device templates
-@app.get("/templates/device")
-async def template_device(request: Request):
-    device_list = []
-    documents = device_collections.find()
-    for document in documents:
-        device_list.append(document)
-
-    return templates.TemplateResponse("devices.html", {"request": request, "device_list": device_list})
-
-
-@app.post("/templates/device")
-async def template_device_create(request: Request, id: int = Form(...), status: bool = Form(...)):
-    try:
-        device_collections.insert_one({'_id': id, 'status': status})
-        response = RedirectResponse(url='/templates/device')
-        return response
-        # devices = {'_id': id, 'status': status}
-        # return {"msg": "created successfully", "created_data": devices, "client": request.client}
-        # device_list = []
-        # documents = device_collections.find()
-        # for document in documents:
-        #     device_list.append(document)
-        # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "msg": "Created successfully"})
-
-    except Exception as e:
-        print('error isss ', e)
-        documents = device_collections.find()
-        for document in documents:
-            idd = document['_id']
-            if idd == id:
-                device_list = []
-                documents = device_collections.find()
-                for document in documents:
-                    device_list.append(document)
-                return templates.TemplateResponse("devices.html", {"request": request, "device_list": device_list,
-                                                                   "msg": f'id {id} already exist in devices, try using other id'})
-                # return {"msg": {f'id {id} already exist in devices, try using other id'}}
-
-
-@app.post('/templates/device/put', tags=["Devices"])
-def template_device_update(request: Request, id: int = Form(...), status: bool = Form(...)):
-    device_collections.update_one({'_id': id}, {"$set": {"status": status}})
-    response = RedirectResponse(url='/templates/device')
-    return response
-    # device_list = []
-    # documents = device_collections.find()
-    # for document in documents:
-    #     device_list.append(document)
-
-    # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "put_msg": f"updated device id {id} to {status}"})
-
-
-@app.post("/templates/device/delete", tags=["Devices"])
-async def template_device_delete(request: Request, id: int = Form(...)):
-    # documents = device_collections.find()
-    # for document in documents:
-    #   idd = document['_id']
-    #   if idd == id:
-    device_collections.delete_one({'_id': id})
-    response = RedirectResponse(url='/templates/device')
-    return response
-    # device_list = []
-    # documents = device_collections.find()
-    # for document in documents:
-    #     device_list.append(document)
-    # return templates.TemplateResponse("devices.html", {"request": request, "device_list":device_list, "delete_msg": f"id {id} deleted successfully"})
-
-
-# fan templates
-@app.get("/templates/fan")
-async def template_fan(request: Request):
-    fan_list = []
-    documents = fan_collections.find()
-    for document in documents:
-        fan_list.append(document)
-
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list})
-
-
-@app.post("/templates/fan")
-async def template_fan_create(request: Request, id: int = Form(...), status: bool = Form(...)):
-    try:
-        fan_collections.insert_one({'_id': id, 'status': status})
-        fans = {'_id': id, 'status': status}
-        # return {"msg": "created successfully", "created_data": fans, "client": request.client}
-        fan_list = []
-        documents = fan_collections.find()
-        for document in documents:
-            fan_list.append(document)
-        return templates.TemplateResponse("fans.html",
-                                          {"request": request, "fan_list": fan_list, "msg": "Created successfully"})
-
-    except:
-        documents = fan_collections.find()
-        for document in documents:
-            idd = document['_id']
-            if idd == id:
-                fan_list = []
-                documents = fan_collections.find()
-                for document in documents:
-                    fan_list.append(document)
-                return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
-                                                                "msg": f'id {id} already exist in fans, try using other id'})
-                # return {"msg": {f'id {id} already exist in fans, try using other id'}}
-
-
-@app.post('/templates/fan/put', tags=["fans"])
-def template_fan_update(request: Request, id: int = Form(...), status: bool = Form(...)):
-    fan_collections.update_one({'_id': id}, {"$set": {"status": status}})
-    fan_list = []
-    documents = fan_collections.find()
-    for document in documents:
-        fan_list.append(document)
-
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
-                                                    "put_msg": f"updated fan id {id} to {status}"})
-
-
-@app.post("/templates/fan/delete", tags=["fans"])
-async def template_fan_delete(request: Request, id: int = Form(...)):
-    # documents = fan_collections.find()
-    # for document in documents:
-    #   idd = document['_id']
-    #   if idd == id:
-    fan_collections.delete_one({'_id': id})
-    fan_list = []
-    documents = fan_collections.find()
-    for document in documents:
-        fan_list.append(document)
-    return templates.TemplateResponse("fans.html", {"request": request, "fan_list": fan_list,
-                                                    "delete_msg": f"id {id} deleted successfully"})
 
 
 
