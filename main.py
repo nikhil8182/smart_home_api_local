@@ -624,7 +624,7 @@ async def All_Eb3phase_Voltage_Data():
 
 @app.get("/eb3/voltage/{item_id}", tags=["EB 3 Phase"])
 async def Get_Eb3phase_Data_with_ID(item_id: int):
-    return eb3phasae_voltage_collections.find_one({"_id": item_id})
+    return eb3phasae_voltage_collections.find_one({"device_id": item_id})
 
 
 @app.post("/eb3/voltage", description="Create a new Mechanics", tags=["EB 3 Phase"])
@@ -675,7 +675,7 @@ async def All_Eb3phase_ampere_Data():
 
 @app.get("/eb3/ampere/{item_id}", tags=["EB 3 Phase"])
 async def Get_Eb3phase_Data_with_ID(item_id: int):
-    return eb3phasae_ampere_collections.find_one({"_id": item_id})
+    return eb3phasae_ampere_collections.find_one({"device_id": item_id})
 
 
 @app.post("/eb3/ampere", description="Create a new Mechanics", tags=["EB 3 Phase"])
