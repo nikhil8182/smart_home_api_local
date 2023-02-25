@@ -645,9 +645,9 @@ async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
     except:
         documents = eb3phasae_voltage_collections.find()
         for document in documents:
-            id = document["_id"]
-            if id == eb3.id:
-                return {"msg": {f"id {eb3.id} already exist in fan, try using other id"}}
+            id = document["device_id"]
+            if id == eb3.device_id:
+                return {"msg": {f"id {eb3.device_id} already exist in fan, try using other id"}}
 
 
 @app.put("/eb3/voltage/{item_id}", tags=["EB 3 Phase"])
