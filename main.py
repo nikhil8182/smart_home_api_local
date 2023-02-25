@@ -632,7 +632,7 @@ async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
     try:
         eb3phasae_voltage_collections.insert_one(
             {
-                "_id": time.time(),   
+                "_id": time.time(), 
                 "device_id": eb3.device_id,
                 "r_voltage": eb3.r_voltage,
                 "y_voltage": eb3.y_voltage,
@@ -649,6 +649,20 @@ async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
             if id == eb3.id:
                 return {"msg": {f"id {eb3.id} already exist in fan, try using other id"}}
 
+
+@app.put("/eb3/voltage/{item_id}", tags=["EB 3 Phase"])
+def Update_Eb3phase_Voltage_status(eb3: Eb3Voltage, item_id: int):
+    eb3phasae_voltage_collections.update_one(
+        {"device_id": item_id}, {
+            "$set": {
+                "r_voltage": eb3.r_voltage,
+                "y_voltage": eb3.y_voltage,
+                "b_voltage": eb3.b_voltage,
+                "time_stamp": eb3.time_stamp
+            }
+        }
+    )
+    return {"msg": f"updated to {eb3}"}
 
 @app.get("/eb3/ampere/", tags=["EB 3 Phase"])
 async def All_Eb3phase_ampere_Data():
@@ -685,6 +699,20 @@ async def create_New_Eb3phase(eb3: Eb3Ampere, request: Request):
             id = document["_id"]
             if id == eb3.id:
                 return {"msg": {f"id {eb3.id} already exist in fan, try using other id"}}
+
+@app.put("/eb3/ampere/{item_id}", tags=["EB 3 Phase"])
+def Update_Eb3phase_Ampere_status(eb3: Eb3Ampere, item_id: int):
+    eb_ups_ampere_collections.update_one(
+        {"device_id": item_id}, {
+            "$set": {
+                "r_voltage": eb3.r_ampere,
+                "y_voltage": eb3.y_ampere,
+                "b_voltage": eb3.b_ampere,
+                "time_stamp": eb3.time_stamp
+            }
+        }
+    )
+    return {"msg": f"updated to {eb3}"}
 
 
 @app.get("/room", tags=["Rooms"])
