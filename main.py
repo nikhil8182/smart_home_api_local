@@ -492,9 +492,16 @@ async def Get_Eb_Data_with_ID(item_id: int):
 
 
 @app.post("/ups/voltage", description="Create a new Mechanics", tags=["EB"])
-async def create_New_Eb(eb: EbStatus, request: Request):
+async def create_New_Eb(eb: UpsVoltage, request: Request):
     try:
-        eb_ups_voltage_collections.insert_one({"_id": eb.id, "status": eb.status, "time_stamp": eb.time_stamp})
+        eb_ups_voltage_collections.insert_one(
+            {
+                "_id": time.time(),
+                "device_id": eb.device_id,
+                "voltage": eb.voltage,
+                "time_stamp": eb.time_stamp
+            }
+        )
         return {"msg": "created successfully", "created_data": eb, "client": request.client}
     except:
         documents = eb_ups_voltage_collections.find()
@@ -519,9 +526,16 @@ async def Get_Eb_Data_with_ID(item_id: int):
 
 
 @app.post("/ups/ampere", description="Create a new Mechanics", tags=["EB"])
-async def create_New_Eb(eb: EbStatus, request: Request):
+async def create_New_Eb(eb: UpsAmpere, request: Request):
     try:
-        eb_ups_ampere_collections.insert_one({"_id": eb.id, "status": eb.status, "time_stamp": eb.time_stamp})
+        eb_ups_ampere_collections.insert_one(
+            {
+                "_id": time.time(),
+                "device_id": eb.device_id,
+                "ampere": eb.ampere,
+                "time_stamp": eb.time_stamp
+            }
+        )
         return {"msg": "created successfully", "created_data": eb, "client": request.client}
     except:
         documents = eb_ups_ampere_collections.find()
@@ -618,7 +632,8 @@ async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
     try:
         eb3phasae_voltage_collections.insert_one(
             {
-                "_id": eb3.id,
+                "_id": time.time(),   
+                "device_id": eb3.device_id,
                 "r_voltage": eb3.r_voltage,
                 "y_voltage": eb3.y_voltage,
                 "b_voltage": eb3.b_voltage,
@@ -654,7 +669,8 @@ async def create_New_Eb3phase(eb3: Eb3Ampere, request: Request):
     try:
         eb3phasae_ampere_collections.insert_one(
             {
-                "_id": eb3.id,
+                "_id": time.time(),
+                "device_id": eb3.device_id,
                 "r_ampere": eb3.r_ampere,
                 "y_ampere": eb3.y_ampere,
                 "b_ampere": eb3.b_ampere,

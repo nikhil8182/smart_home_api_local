@@ -129,12 +129,12 @@ class EbStatus(BaseModel):
     time_stamp: int
 
 class UpsVoltage(BaseModel):
-    id: int
+    device_id: int
     voltage: int
     time_stamp: int
 
 class UpsAmpere(BaseModel):
-    id: int
+    device_id: int
     ampere: float
     time_stamp: int
 
@@ -165,14 +165,14 @@ class Eb3_put(BaseModel):
     ups_battery_percentage: int
 
 class Eb3Voltage(BaseModel):
-    id: int
+    device_id: int
     r_voltage: int
     y_voltage: int
     b_voltage: int
     time_stamp: int
 
 class Eb3Ampere(BaseModel):
-    id: int
+    device_id: int
     r_ampere: float
     y_ampere: float
     b_ampere: float
