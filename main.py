@@ -705,9 +705,9 @@ def Update_Eb3phase_Ampere_status(eb3: Eb3Ampere, item_id: int):
     eb_ups_ampere_collections.update_one(
         {"device_id": item_id}, {
             "$set": {
-                "r_voltage": eb3.r_ampere,
-                "y_voltage": eb3.y_ampere,
-                "b_voltage": eb3.b_ampere,
+                "r_ampere": eb3.r_ampere,
+                "y_ampere": eb3.y_ampere,
+                "b_ampere": eb3.b_ampere,
                 "time_stamp": eb3.time_stamp
             }
         }
