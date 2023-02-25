@@ -702,7 +702,7 @@ async def create_New_Eb3phase(eb3: Eb3Ampere, request: Request):
 
 @app.put("/eb3/ampere/{item_id}", tags=["EB 3 Phase"])
 def Update_Eb3phase_Ampere_status(eb3: Eb3Ampere, item_id: int):
-    eb_ups_ampere_collections.update_one(
+    eb3phasae_ampere_collections.update_one(
         {"device_id": item_id}, {
             "$set": {
                 "r_ampere": eb3.r_ampere,
