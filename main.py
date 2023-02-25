@@ -599,7 +599,7 @@ async def create_New_Eb3phase(eb3: Eb3, request: Request):
                 return {"msg": {f"id {eb3.id} already exist in fan, try using other id"}}
 
 
-@app.get("/eb3/voltage", tags=["EB 3 Phase"])
+@app.get("/eb3/voltage/", tags=["EB 3 Phase"])
 async def All_Eb3phase_Voltage_Data():
     list = []
     documents = eb3phasae_voltage_collections.find()
@@ -635,7 +635,7 @@ async def create_New_Eb3phase(eb3: Eb3Voltage, request: Request):
                 return {"msg": {f"id {eb3.id} already exist in fan, try using other id"}}
 
 
-@app.get("/eb3/ampere", tags=["EB 3 Phase"])
+@app.get("/eb3/ampere/", tags=["EB 3 Phase"])
 async def All_Eb3phase_ampere_Data():
     list = []
     documents = eb3phasae_ampere_collections.find()
