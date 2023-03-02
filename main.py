@@ -220,8 +220,14 @@ async def All_fan_Logs():
 async def create_New_Fan_Details(devices: Fan_details, request: Request):
     try:
         fan_details_collections.insert_one(
-            {"_id": devices.id, "name": devices.device_name, "room": devices.room, "device_id": devices.device_id,
-             "type": devices.type})
+            {
+                "_id": devices.id,
+                "name": devices.device_name,
+                "room": devices.room,
+                "device_id": devices.device_id,
+                "type": devices.type
+            }
+        )
         return {"msg": "created successfully", "created_data": devices, "client": request.client}
     except:
         documents = fan_details_collections.find()
