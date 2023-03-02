@@ -8,6 +8,7 @@ device_collections = db["devices"]
 device_detail_collections = db["devices_detail"]
 device_details_log_collections = db["devices_details_logs"]
 device_board_log_collections = db["devices_board_logs"]
+fan_board_log_collections = db["fans_board_logs"]
 
 fan_collections = db["fan"]
 led_collections = db["led"]

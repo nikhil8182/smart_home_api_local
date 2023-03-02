@@ -18,6 +18,11 @@ class Devices_details(BaseModel):
     room: str
     type: str
 
+class Devices_details_Put(BaseModel):
+    device_id: int
+    name: str
+    room: str
+    type: str
 
 class Fan_details(BaseModel):
     id: int

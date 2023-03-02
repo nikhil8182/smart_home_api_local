@@ -70,10 +70,31 @@ async def Get_Device_Data_with_ID(item_id: int):
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
+@app.put("/device/details/{item_id}", tags=["Devices"])
+def Update_device_details(device: Devices_details_Put, item_id: int):
+    device_detail_collections.update_one(
+        {"_id": item_id},
+        {
+            "$set":{
+                "name": device.name,
+                "room": device.room,
+                "device_id": device.device_id,
+                "type": device.type
+            }
+        })
+
+    return {"msg": f"updated device id {item_id} to {device}"}
+
+@app.delete("/device/details/{item_id}", tags=["Devices"])
+async def Delete_Devices_Details_by_id(item_id: int):
+    device_detail_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
+
 
 @app.delete("/device/{item_id}", tags=["Devices"])
 async def Delete_Devices_by_id(item_id: int):
-    return device_collections.delete_one({"_id": item_id})
+    device_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 # update device data using put
@@ -140,7 +161,6 @@ async def All_Fan_Data():
     documents = fan_collections.find()
     for document in documents:
         fan_list.append(document)
-
     return fan_list
 
 
@@ -151,7 +171,8 @@ async def Get_Fan_Data_with_ID(item_id: int):
 
 @app.delete("/fan/{item_id}", tags=["Fan"])
 async def Delete_fan_by_id(item_id: int):
-    return fan_collections.delete_one({"_id": item_id})
+    fan_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.put("/fan/{item_id}", tags=["Fan"])
@@ -214,11 +235,46 @@ async def create_New_Fan_Details(devices: Fan_details, request: Request):
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         fan_details_log_collections.insert_one(
-            {"_id": time.time(), "device_id": devices.device_id, "status": devices.status,
-             "timestamp": devices.timestamp, "updated_by": devices.updated_by})
+            {
+            "_id": time.time(),
+            "device_id": devices.device_id,
+            "status": devices.status,
+            "timestamp": devices.timestamp,
+            "updated_by": devices.updated_by
+            }
+        )
         return {"msg": "log created", "created_data": devices, "client": request.client}
     except:
-        return {"msg": {f"id already exist in devices log, try using other id"}}
+        return {"msg": {f"id {devices.device_id} already exist in devices log, try using other id"}}
+
+
+@app.get("/fan/boardlog", tags=["Fans"])
+async def All_Fan_Boardlog():
+    try:
+        device_list = []
+        documents = fan_board_log_collections.find()
+        for x in documents:
+            device_list.append(x)
+        return device_list
+    except:
+        return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
+
+@app.post("/fan/boardlog", tags=["Fans"])
+async def create_New_Fan_Board_Log(devices: Log, request: Request):
+    try:
+        fan_board_log_collections.insert_one(
+            {
+                "_id": time.time(),
+                "device_id": devices.device_id,
+                "status": devices.status,
+                "timestamp": devices.timestamp,
+                "updated_by": devices.updated_by
+            }
+        )
+        return {"msg": "log created", "created_data": devices, "client": request.client}
+    except:
+        return {"msg": {f"id {devices.device_id} already exist in devices log, try using other id"}}
+
 
 
 @app.get("/led", tags=["LED"])
@@ -237,7 +293,8 @@ async def Get_LED_Data_with_ID(item_id: int):
 
 @app.delete("/led/{item_id}", tags=["LED"])
 async def Delete_led_by_id(item_id: int):
-    return led_collections.delete_one({"_id": item_id})
+    led_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.put("/led/{item_id}", tags=["LED"])
@@ -322,7 +379,8 @@ async def Get_mechanics_Data_with_ID(item_id: int):
 
 @app.delete("/mechanics/{item_id}", tags=["Mechanics"])
 async def Delete_mechanics_by_id(item_id: int):
-    return mechanics_collections.delete_one({"_id": item_id})
+    mechanics_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.put("/mechanics/{item_id}", tags=["Mechanics"])
@@ -344,19 +402,19 @@ async def create_mechanics_led(mechanics: Mechanics, request: Request):
                 return {"msg": {f"id {mechanics.id} already exist in fan, try using other id"}}
 
 
-@app.get("/mechanics/details", tags=["Mechanics"])
+@app.get("/mechanic/details", tags=["Mechanics"])
 async def All_Mechanics_Details():
     try:
         device_list = []
         documents = mechanics_details_collections.find()
         for document in documents:
             device_list.append(document)
-        return {"details": device_list}
+        return device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
-@app.get("/mechanica/log", tags=["Mechanics"])
+@app.get("/mechanic/log", tags=["Mechanics"])
 async def All_mechanics_Logs():
     device_list = []
     documents = mechanics_details_log_collections.find()
@@ -365,7 +423,7 @@ async def All_mechanics_Logs():
     return device_list
 
 
-@app.post("/mechanics/details", tags=["Mechanics"])
+@app.post("/mechanic/details", tags=["Mechanics"])
 async def create_New_Fan_Details(devices: Mechanics_details, request: Request):
     try:
         mechanics_details_collections.insert_one(
@@ -380,7 +438,7 @@ async def create_New_Fan_Details(devices: Mechanics_details, request: Request):
                 return {"msg": {f"id {devices.id} already exist in devices, try using other id"}}
 
 
-@app.post("/mechanics/log", tags=["Mechanics"])
+@app.post("/mechanic/log", tags=["Mechanics"])
 async def create_New_Fan_Log(devices: Log, request: Request):
     try:
         mechanics_details_log_collections.insert_one(
@@ -407,7 +465,8 @@ async def Get_Eb_Data_with_ID(item_id: int):
 
 @app.delete("/eb/{item_id}", tags=["EB"])
 async def Delete_Eb_by_id(item_id: int):
-    return eb_sensor_collections.delete_one({"_id": item_id})
+    eb_sensor_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.put("/eb/{item_id}", tags=["EB"])
@@ -561,7 +620,8 @@ async def Get_Eb3phase_Data_with_ID(item_id: int):
 
 @app.delete("/eb3/{item_id}", tags=["EB 3 Phase"])
 async def Delete_Eb3phase_by_id(item_id: int):
-    return eb3phasae_sensor_collections.delete_one({"_id": item_id})
+    eb3phasae_sensor_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.put("/eb3/{item_id}", tags=["EB 3 Phase"])
@@ -723,24 +783,13 @@ async def All_Room_Data():
         room_list.append(document)
     return room_list
 
-
-@app.get("/room/{item_id}", tags=["Rooms"])
-async def Get_room_Data_with_ID(item_id: int):
-    return room_collections.find_one({"_id": item_id})
-
-
-@app.delete("/room/{item_id}", tags=["Rooms"])
-async def Delete_room_by_id(item_id: int):
-    return room_collections.delete_one({"_id": item_id})
-
-
 @app.post("/room", description="Create a new room", tags=["Rooms"])
 async def create_New_room(room: Rooms, request: Request):
     try:
         room_collections.insert_one(
             {
                 "_id": room.id,
-                "status": room.name,
+                "name": room.name,
                 "device_id": room.devices,
                 "fan_id": room.fan,
                 "led_id": room.led,
@@ -754,6 +803,30 @@ async def create_New_room(room: Rooms, request: Request):
             id = document["_id"]
             if id == room.id:
                 return {"msg": {f"id {room.id} already exist in rooms, try using other id"}}
+
+@app.get("/room/{item_id}", tags=["Rooms"])
+async def Get_room_Data_with_ID(item_id: int):
+    return room_collections.find_one({"_id": item_id})
+
+@app.put("/room/{item_id}", tags=["Rooms"])
+async def Put_room_Data_with_ID(rooms: Rooms, item_id: int):
+    eb3phasae_ampere_collections.update_one(
+        {"_id": item_id}, {
+            "$set": {
+                "name": rooms.name,
+                "device_id": rooms.devices,
+                "fan_id": rooms.fan,
+                "led_id": rooms.led,
+                "mechanics_id": rooms.mechanics
+            }
+        }
+    )
+    return {"msg": f"updated to {rooms}"}
+
+@app.delete("/room/{item_id}", tags=["Rooms"])
+async def Delete_room_by_id(item_id: int):
+    room_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
 
 
 @app.get("/temp", tags=["Temperature"])
