@@ -206,6 +206,9 @@ async def All_Fan_Details():
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
+@app.get("/fans/details/{item_id}", tags=["Fan"])
+async def All_Fan_Details(item_id: int):
+    return fan_details_collections.find_one({"_id": item_id})
 
 @app.get("/fans/log", tags=["Fan"])
 async def All_fan_Logs():
