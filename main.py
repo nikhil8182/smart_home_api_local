@@ -2,6 +2,7 @@ import time
 from fastapi import FastAPI, Request
 from models import *
 from mongo import *
+import uvicorn
 
 app = FastAPI(title="Onwords Local Smart Home Server", docs_url="/admin", redoc_url="/document")
 
@@ -194,19 +195,19 @@ async def create_New_fan(fan: Fan, request: Request):
                 return {"msg": {f"id {fan.id} already exist in fan, try using other id"}}
 
 
-@app.get("/fan/details", tags=["Fan"])
+@app.get("/fans/details", tags=["Fan"])
 async def All_Fan_Details():
     try:
         device_list = []
         documents = fan_details_collections.find()
         for document in documents:
             device_list.append(document)
-        return {"details": device_list}
+        return device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
 
-@app.get("/fan/log", tags=["Fan"])
+@app.get("/fans/log", tags=["Fan"])
 async def All_fan_Logs():
     device_list = []
     documents = fan_details_log_collections.find()
@@ -254,7 +255,7 @@ async def create_New_Fan_Log(devices: Log, request: Request):
         return {"msg": {f"id {devices.device_id} already exist in devices log, try using other id"}}
 
 
-@app.get("/fan/boardlog", tags=["Fans"])
+@app.get("/fans/boardlog", tags=["Fan"])
 async def All_Fan_Boardlog():
     try:
         device_list = []
@@ -265,7 +266,7 @@ async def All_Fan_Boardlog():
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
-@app.post("/fan/boardlog", tags=["Fans"])
+@app.post("/fan/boardlog", tags=["Fan"])
 async def create_New_Fan_Board_Log(devices: Log, request: Request):
     try:
         fan_board_log_collections.insert_one(
@@ -866,3 +867,7 @@ async def create_New_fan(temp: Temperature, request: Request):
                 return {"msg": {f"id {temp.device_id} already exist in temp, try using other id"}}
 
 # to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 8182
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8182, reload=True)
