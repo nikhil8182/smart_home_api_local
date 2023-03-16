@@ -425,7 +425,7 @@ async def All_Mechanics_Details():
 
 @app.get("/mechanic/detail/{item_id}", tags=["Mechanics"])
 async def All_Mechanics_Details(item_id: int):
-    return mechanics_collections.find_one({"_id": item_id})
+    return mechanics_details_collections.find_one({"_id": item_id})
 
 
 @app.get("/mechanic/log", tags=["Mechanics"])
