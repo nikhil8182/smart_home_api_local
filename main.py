@@ -423,6 +423,10 @@ async def All_Mechanics_Details():
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
+@app.get("/mechanic/detail/{item_id}", tags=["Mechanics"])
+async def All_Mechanics_Details(item_id: int):
+    return mechanics_collections.find_one({"_id": item_id})
+
 
 @app.get("/mechanic/log", tags=["Mechanics"])
 async def All_mechanics_Logs():
