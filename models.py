@@ -62,7 +62,7 @@ class Devices_put(BaseModel):
 
 class Led(BaseModel):
     id: int
-
+    brightness: str
     status: bool
     R: str
     G: str
@@ -70,6 +70,7 @@ class Led(BaseModel):
 
 
 class Led_put(BaseModel):
+    brightness: str
     status: bool
     R: str
     G: str

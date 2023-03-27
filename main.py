@@ -309,14 +309,14 @@ async def Delete_led_by_id(item_id: int):
 
 @app.put("/led/{item_id}", tags=["LED"])
 def Update_led_status(led: Led_put, item_id: int):
-    led_collections.update_one({"_id": item_id}, {"$set": {"status": led.status, "R": led.R, "G": led.G, "B": led.B}})
+    led_collections.update_one({"_id": item_id}, {"$set": {"brightness": led.brightness, "status": led.status, "R": led.R, "G": led.G, "B": led.B}})
     return {"msg": f"updated to {led}"}
 
 
 @app.post("/led", description="Create a new LED", tags=["LED"])
 async def create_New_led(led: Led, request: Request):
     try:
-        led_collections.insert_one({"_id": led.id, "status": led.status, "R": led.R, "G": led.G, "B": led.B})
+        led_collections.insert_one({"_id": led.id, "brightness": led.brightness, "status": led.status, "R": led.R, "G": led.G, "B": led.B})
         return {"msg": "created successfully", "created_data": led, "client": request.client}
     except:
         documents = led_collections.find()
@@ -326,19 +326,22 @@ async def create_New_led(led: Led, request: Request):
                 return {"msg": {f"id {led.id} already exist in fan, try using other id"}}
 
 
-@app.get("/led/details", tags=["LED"])
+@app.get("/leds/details", tags=["LED"])
 async def All_LED_Details():
     try:
         device_list = []
         documents = led_details_collections.find()
         for document in documents:
             device_list.append(document)
-        return {"details": device_list}
+        return device_list
     except:
         return "invalid url, contact admin at admin@onwords.in or cs@onwords.in"
 
+@app.get("/leds/details/{item_id}", tags=["LED"])
+async def Get_LED_Details_Data_with_ID(item_id: int):
+    return led_details_collections.find_one({"_id": item_id})
 
-@app.get("/led/log", tags=["LED"])
+@app.get("/leds/log", tags=["LED"])
 async def All_LED_Logs():
     device_list = []
     documents = led_details_log_collections.find()
@@ -347,7 +350,7 @@ async def All_LED_Logs():
     return device_list
 
 
-@app.post("/led/details", tags=["LED"])
+@app.post("/leds/details", tags=["LED"])
 async def create_New_LED_Details(devices: Led_details, request: Request):
     try:
         led_details_collections.insert_one(
@@ -362,7 +365,7 @@ async def create_New_LED_Details(devices: Led_details, request: Request):
                 return {"msg": {f"id {devices.id} already exist in devices, try using other id"}}
 
 
-@app.post("/led/log", tags=["LED"])
+@app.post("/leds/log", tags=["LED"])
 async def create_New_LED_Log(devices: Log, request: Request):
     try:
         led_details_log_collections.insert_one(
