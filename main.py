@@ -879,5 +879,123 @@ async def create_New_fan(temp: Temperature, request: Request):
 # to run use this command uvicorn main:app --reload --host 0.0.0.0 --port 8182
 
 
+@app.get("/motionsensor", tags=["Motion Sensor"])
+async def All_MotionSensor_Data():
+    list = []
+    documents = motionsensor_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/motionsensor/{item_id}", tags=["Motion Sensor"])
+async def Get_MotionSensor_Data_with_ID(item_id: int):
+    return motionsensor_collections.find_one({"_id": item_id})
+
+
+@app.delete("/motionsensor/{item_id}", tags=["Motion Sensor"])
+async def Delete_MotionSensor_by_id(item_id: int):
+    motionsensor_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
+
+
+@app.put("/motionsensor/{item_id}", tags=["Motion Sensor"])
+def Update_MotionSensor_status(led: Led_put, item_id: int):
+    motionsensor_collections.update_one({"_id": item_id}, {"$set": {"brightness": led.brightness, "status": led.status, "R": led.R, "G": led.G, "B": led.B}})
+    return {"msg": f"updated to {led}"}
+
+
+@app.post("/motionsensor", description="Create a new MotionSensor", tags=["Motion Sensor"])
+async def create_New_led(ms: MotionSensor, request: Request):
+    try:
+        motionsensor_collections.insert_one({"_id": ms.id, "ss": ms.ss, "on_s": ms.on_s, "off_s": ms.off_s, "time": ms.time})
+        return {"msg": "created successfully", "created_data": ms, "client": request.client}
+    except:
+        documents = motionsensor_collections.find()
+        for document in documents:
+            id = document["_id"]
+            if id == ms.id:
+                return {"msg": {f"id {ms.id} already exist in fan, try using other id"}}
+
+@app.get("/motionsensors/details", tags=["Motion Sensor"])
+async def All_MotionSensor_Details():
+    list = []
+    documents = motionsensor_details_collections.find()
+    for document in documents:
+        list.append(document)
+    return list
+
+
+@app.get("/motionsensor/details/{item_id}", tags=["Motion Sensor"])
+async def Get_MotionSensor_Details_with_ID(item_id: int):
+    return motionsensor_details_collections.find_one({"_id": item_id})
+
+
+@app.post("/motionsensor/details", tags=["Motion Sensor"])
+async def create_New_devices(devices: MotionSensor_details, request: Request):
+    try:
+        motionsensor_details_collections.insert_one(
+            {"_id": devices.id, "name": devices.device_name, "room": devices.room, "device_id": devices.device_id,
+             "type": devices.type})
+        return {"msg": "created successfully", "created_data": devices, "client": request.client}
+    except:
+        documents = motionsensor_details_collections.find()
+        for document in documents:
+            id = document["_id"]
+            if id == devices.id:
+                return {"msg": {f"id {devices.id} already exist in devices, try using other id"}}
+
+
+@app.put("/motionsensor/details/{item_id}", tags=["Motion Sensor"])
+def Update_device_details(device: MotionSensor_Put, item_id: int):
+    motionsensor_details_collections.update_one(
+        {"_id": item_id},
+        {
+            "$set":{
+                "name": device.name,
+                "room": device.room,
+                "device_id": device.device_id,
+                "type": device.type
+            }
+        }
+    )
+
+    return {"msg": f"updated device id {item_id} to {device}"}
+
+@app.delete("/motionsensor/details/{item_id}", tags=["Motion Sensor"])
+async def Delete_Devices_Details_by_id(item_id: int):
+    motionsensor_details_collections.delete_one({"_id": item_id})
+    return {"msg": f"Successfully deleted item in {item_id}"}
+
+@app.get("/temp", tags=["Temperature"])
+async def All_Room_Data():
+    room_list = []
+    documents = temp_collections.find()
+    for document in documents:
+        room_list.append(document)
+    return room_list
+
+
+@app.post("/temp", description="Create a new item", tags=["Temperature"])
+async def create_New_fan(temp: Temperature, request: Request):
+    try:
+        temp_collections.insert_one(
+            {
+                "_id": temp.device_id,
+                "ss": temp.device_id,
+                "on_s": temp.room,
+                "off_s": temp.temperature,
+                "time": temp.humidity,
+            }
+        )
+        return {"msg": "created successfully", "created_data": temp, "client": request.client}
+    except:
+        documents = temp_collections.find()
+        for document in documents:
+            id = document["_id"]
+            if id == temp.device_id:
+                return {"msg": {f"id {temp.device_id} already exist in temp, try using other id"}}
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8182, reload=True)

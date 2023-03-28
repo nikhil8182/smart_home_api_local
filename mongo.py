@@ -37,3 +37,6 @@ wta_collections = db["wta"]
 board_log_collections = db["board_log"]
 room_collections = db["room"]
 temp_collections = db["temperature"]
+
+motionsensor_collections = db["motion_sensor"]
+motionsensor_details_collections = db["motion_sensor_details"]

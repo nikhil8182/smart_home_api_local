@@ -191,3 +191,25 @@ class Rooms(BaseModel):
     fan: list[int]
     led: list[int]
     mechanics: list[int]
+
+
+class MotionSensor(BaseModel):
+    id: int
+    ss: bool
+    on_s: bool
+    off_s: bool
+    time: int
+
+
+class MotionSensor_Put(BaseModel):
+    device_id: int
+    name: str
+    room: str
+    type: str
+
+class MotionSensor_details(BaseModel):
+    id: int
+    device_id: int
+    device_name: str
+    room: str
+    type: str
