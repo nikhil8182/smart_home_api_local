@@ -202,10 +202,11 @@ class MotionSensor(BaseModel):
 
 
 class MotionSensor_Put(BaseModel):
-    device_id: int
-    name: str
-    room: str
-    type: str
+    ss: bool
+    on_s: bool
+    off_s: bool
+    time: int
+    
 
 class MotionSensor_details(BaseModel):
     id: int

@@ -900,9 +900,16 @@ async def Delete_MotionSensor_by_id(item_id: int):
 
 
 @app.put("/motionsensor/{item_id}", tags=["Motion Sensor"])
-def Update_MotionSensor_status(led: Led_put, item_id: int):
-    motionsensor_collections.update_one({"_id": item_id}, {"$set": {"brightness": led.brightness, "status": led.status, "R": led.R, "G": led.G, "B": led.B}})
-    return {"msg": f"updated to {led}"}
+def Update_MotionSensor_status(motion: MotionSensor_Put, item_id: int):
+    motionsensor_collections.update_one(
+        {"_id": item_id},
+        {"$set": {
+            "ss": motion.ss,
+            "on_s": motion.on_s,
+            "off_s": motion.off_s,
+            "time": motion.time
+        }})
+    return {"msg": f"updated to {motion}"}
 
 
 @app.post("/motionsensor", description="Create a new MotionSensor", tags=["Motion Sensor"])
