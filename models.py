@@ -191,6 +191,7 @@ class Rooms(BaseModel):
     fan: list[int]
     led: list[int]
     mechanics: list[int]
+    motion_sensor: list[int]
 
 
 class MotionSensor(BaseModel):

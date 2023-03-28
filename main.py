@@ -810,7 +810,8 @@ async def create_New_room(room: Rooms, request: Request):
                 "device_id": room.devices,
                 "fan_id": room.fan,
                 "led_id": room.led,
-                "mechanics_id": room.mechanics
+                "mechanics_id": room.mechanics,
+                "motion_sensor_id": room.motion_sensor
             }
         )
         return {"msg": "created successfully", "created_data": room, "client": request.client}
@@ -834,7 +835,8 @@ async def Put_room_Data_with_ID(rooms: Rooms, item_id: int):
                 "device_id": rooms.devices,
                 "fan_id": rooms.fan,
                 "led_id": rooms.led,
-                "mechanics_id": rooms.mechanics
+                "mechanics_id": rooms.mechanics,
+                "motion_sensor_id": rooms.motion_sensor
             }
         }
     )
