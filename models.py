@@ -18,11 +18,13 @@ class Devices_details(BaseModel):
     room: str
     type: str
 
+
 class Devices_details_Put(BaseModel):
     device_id: int
     name: str
     room: str
     type: str
+
 
 class Fan_details(BaseModel):
     id: int
@@ -129,20 +131,24 @@ class Eb_put(BaseModel):
     ups_AMP: int
     ups_battery_percentage: int
 
+
 class EbStatus(BaseModel):
     id: int
     status: bool
     time_stamp: int
+
 
 class UpsVoltage(BaseModel):
     device_id: int
     voltage: int
     time_stamp: int
 
+
 class UpsAmpere(BaseModel):
     device_id: int
     ampere: float
     time_stamp: int
+
 
 class Eb3(BaseModel):
     id: int
@@ -170,6 +176,7 @@ class Eb3_put(BaseModel):
     ups_AMP: int
     ups_battery_percentage: int
 
+
 class Eb3Voltage(BaseModel):
     device_id: int
     r_voltage: int
@@ -177,12 +184,14 @@ class Eb3Voltage(BaseModel):
     b_voltage: int
     time_stamp: int
 
+
 class Eb3Ampere(BaseModel):
     device_id: int
     r_ampere: float
     y_ampere: float
     b_ampere: float
     time_stamp: int
+
 
 class Rooms(BaseModel):
     id: int
@@ -207,10 +216,17 @@ class MotionSensor_Put(BaseModel):
     on_s: bool
     off_s: bool
     time: int
-    
+
 
 class MotionSensor_details(BaseModel):
     id: int
+    device_id: int
+    device_name: str
+    room: str
+    type: str
+
+
+class MotionSensor_details_put(BaseModel):
     device_id: int
     device_name: str
     room: str

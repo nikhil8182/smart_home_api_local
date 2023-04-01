@@ -956,12 +956,12 @@ async def create_New_devices(devices: MotionSensor_details, request: Request):
 
 
 @app.put("/motionsensor/details/{item_id}", tags=["Motion Sensor"])
-def Update_device_details(device: MotionSensor_Put, item_id: int):
+def Update_device_details(device: MotionSensor_details_put, item_id: int):
     motionsensor_details_collections.update_one(
         {"_id": item_id},
         {
             "$set":{
-                "name": device.name,
+                "name": device.device_name,
                 "room": device.room,
                 "device_id": device.device_id,
                 "type": device.type
