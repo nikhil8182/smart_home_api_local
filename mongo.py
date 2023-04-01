@@ -28,7 +28,7 @@ eb_status_collections = db["eb_status"]
 eb_ups_voltage_collections = db["eb_ups_voltage"]
 eb_ups_ampere_collections = db["eb_ups_ampere"]
 
-eb3phasae_sensor_collections = db["eb_sensor"]
+eb3phasae_sensor_collections = db["eb3_sensor"]
 eb3phasae_voltage_collections = db["eb3_voltage"]
 eb3phasae_ampere_collections = db["eb3_ampere"]
 
